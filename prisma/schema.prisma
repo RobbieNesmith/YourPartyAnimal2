@@ -12,3 +12,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  songs Song[]
+  @@map("users")
+}
+
+model Song {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+  url String
+  name String
+  rating Int
+  requested_at DateTime
+  played_at DateTime
+  @@map("songs")
+}
