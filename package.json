@@ -20,8 +20,8 @@
     "@remix-run/serve": "^2.11.2",
     "isbot": "^4.1.0",
     "prisma": "^5.19.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "18.3.0-canary-01ab35a9a-20240228",
+    "react-dom": "18.3.0-canary-01ab35a9a-20240228",
     "react-hook-form": "^7.53.2",
     "youtube-search-api-ts": "^1.2.8"
   },
