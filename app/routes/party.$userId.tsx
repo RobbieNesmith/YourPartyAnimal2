@@ -1,3 +1,4 @@
+import { Button, Stack, TextField } from "@mui/material";
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
@@ -34,12 +35,12 @@ export default function PartyView() {
 
   return (
     <div>
-      <div>This is where you'll add songs for user {user.name}'s party</div>
+      <h1>Add a song to {user.name}'s party</h1>
       <form onSubmit={handleSubmit(handleSearch)}>
-        <div>
-          <input {...register("q", {required: true})} />
-          <button disabled={searching}>Search</button>
-        </div>
+        <Stack direction="row">
+          <TextField label="Search" {...register("q", { required: true })} />
+          <Button type="submit" disabled={searching}>Search</Button>
+        </Stack>
       </form>
       <SearchResultsList results={results} />
     </div>
