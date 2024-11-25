@@ -24,10 +24,10 @@ model Song {
   id Int @id @default(autoincrement())
   user_id Int
   user User @relation(fields: [user_id], references: [id])
-  url String
+  video_id String
   name String
   rating Int
   requested_at DateTime
-  played_at DateTime
+  played_at DateTime?
   @@map("songs")
 }
