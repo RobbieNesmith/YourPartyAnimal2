@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { SearchOutput } from "youtube-search-api-ts";
 import SearchResultsList from "~/components/SearchResultsList";
 import { prisma } from "~/prisma.server";
+import { searchYoutube } from "~/services/YoutubeService";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   var idNum = parseInt(params.userId || "0");
@@ -28,8 +29,7 @@ export default function PartyView() {
 
   const handleSearch: SubmitHandler<SearchFormInputs> = async (data) => {
     setSearching(true);
-    const searchResponse = await fetch("/search?" + new URLSearchParams({q: data.q}));
-    setResults(await searchResponse.json() as SearchOutput);
+    setResults(await searchYoutube(data.q));
     setTimeout(() => setSearching(false), 1000);
   };
 
