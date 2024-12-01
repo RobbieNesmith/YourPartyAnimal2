@@ -25,7 +25,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const api = new YoutubeSearchApi();
   const videoDetails = await api.getVideoDetails(id);
 
-  enqueueSong(userIdInt, videoDetails.id, videoDetails.title);
+  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title);
 
   return json({ details: videoDetails });
 }
