@@ -42,7 +42,7 @@ export default function PartyView() {
           <Button type="submit" disabled={searching}>Search</Button>
         </Stack>
       </form>
-      <SearchResultsList results={results} />
+      <SearchResultsList partyId={user.id} results={results} />
     </div>
   );
 }
