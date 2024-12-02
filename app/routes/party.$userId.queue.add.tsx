@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -39,7 +39,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   await enqueueSong(userIdInt, videoDetails.id, videoDetails.title);
 
-  return json({ details: videoDetails });
+  return redirect(`/party/${userId}`);
 }
 
 type SearchFormInputs = {
