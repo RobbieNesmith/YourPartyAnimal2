@@ -1,6 +1,6 @@
 .queueList {
   padding: 0;
-  list-style-position: inside;
+  list-style: none;
 }
 
 .queueItem {
@@ -9,8 +9,22 @@
   padding: 0.5rem;
   margin-bottom: 0.25rem;
   overflow: hidden;
+  white-space: nowrap;
 }
 
-.queueItem:nth-child(2) {
+.queueItem:nth-child(even) {
   background-color: #eee;
+}
+
+.thumbnail {
+  height: 4rem;
+  vertical-align: bottom;
+}
+
+.centerContainer {
+  display: inline-flex;
+  flex-direction: column;
+  height: 4rem;
+  justify-content: space-around;
+  margin-left: 0.5rem;
 }
