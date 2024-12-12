@@ -24,3 +24,21 @@ export async function getQueuedSongs(userId: number) {
   },
   orderBy: {requested_at: "asc"}});
 }
+
+export async function upvoteSong(userId: number, songId: number) {
+  const updatedSong = prisma.song.update({
+    where: { user_id: userId, id: songId },
+    data: { rating: { increment: 1 } }
+  });
+
+  return updatedSong;
+}
+
+export async function downvoteSong(userId: number, songId: number) {
+  const updatedSong = prisma.song.update({
+    where: { user_id: userId, id: songId },
+    data: { rating: { decrement: 1 } }
+  });
+
+  return updatedSong;
+}

@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { prisma } from "~/prisma.server";
+import { downvoteSong, upvoteSong } from "~/services/QueueService";
 
 export function loader() {
   return new Response("Method Not Allowed!", {status: 405});
@@ -15,18 +15,12 @@ export async function action({request, params}: LoaderFunctionArgs) {
 
   try {
     if (action === "up") {
-      const updatedSong = prisma.song.update({
-        where: { user_id: userId, id: songId },
-        data: {rating: {increment: 1}} 
-      });
+      const updatedSong = await upvoteSong(userId, songId);
 
       return json(updatedSong);
     }
     if (action === "down") {
-      const updatedSong = prisma.song.update({
-        where: { user_id: userId, id: songId },
-        data: { rating: { decrement: 1 } }
-      });
+      const updatedSong = await downvoteSong(userId, songId);
 
       return json(updatedSong);
     }
