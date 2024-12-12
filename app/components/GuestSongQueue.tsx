@@ -1,5 +1,6 @@
 import { Song } from "@prisma/client";
 import "./GuestSongQueue.css";
+import SongVoting from "./SongVoting";
 
 export default function GuestSongQueue({queuedSongs}: {queuedSongs: Song[]}) {
   return (
@@ -11,6 +12,7 @@ export default function GuestSongQueue({queuedSongs}: {queuedSongs: Song[]}) {
             <div className="centerContainer">
               <span>{s.name}</span>
             </div>
+            <SongVoting songId={s.id} songRating={s.rating} />
           </li>
         );
       })}

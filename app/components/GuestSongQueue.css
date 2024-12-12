@@ -6,10 +6,9 @@
 .queueItem {
   border: solid #999 1px;
   border-radius: 0.5rem;
+  display: flex;
   padding: 0.5rem;
   margin-bottom: 0.25rem;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .queueItem:nth-child(even) {
@@ -17,14 +16,16 @@
 }
 
 .thumbnail {
-  height: 4rem;
+  height: 6rem;
   vertical-align: bottom;
+  flex-shrink: 0;
 }
 
 .centerContainer {
   display: inline-flex;
   flex-direction: column;
-  height: 4rem;
+  height: 6rem;
   justify-content: space-around;
   margin-left: 0.5rem;
+  flex-grow: 1;
 }

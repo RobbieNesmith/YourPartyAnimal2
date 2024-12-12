@@ -1,0 +1,7 @@
+.votingContainer {
+  flex-shrink: 0;
+}
+
+.songScore {
+  text-align: center;
+}
