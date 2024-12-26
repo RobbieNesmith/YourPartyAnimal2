@@ -23,12 +23,14 @@
     "react": "18.3.0-canary-01ab35a9a-20240228",
     "react-dom": "18.3.0-canary-01ab35a9a-20240228",
     "react-hook-form": "^7.53.2",
+    "react-youtube": "^10.1.0",
     "youtube-search-api-ts": "^1.2.8"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.11.2",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "@types/youtube-player": "^5.5.11",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.38.0",
