@@ -42,3 +42,12 @@ export async function downvoteSong(userId: number, songId: number) {
 
   return updatedSong;
 }
+
+export async function markSongAsPlayed(userId: number, songId: number) {
+  const updatedSong = prisma.song.update({
+    where: { user_id: userId, id: songId },
+    data: { played_at: new Date() }
+  });
+
+  return updatedSong;
+}
