@@ -1,17 +1,28 @@
 import { Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import "./SongVoting.css";
+import { useParams } from "@remix-run/react";
 
 export default function SongVoting({songId, songRating}: {songId: number, songRating: number}) {
   const [internalRating, setInternalRating] = useState(songRating);
-
-  const voteUp = useCallback(() => {
-    // call to backend to update rating
+  const {userId} = useParams();
+  const voteUp = useCallback(async () => {
+    const fd = new FormData();
+    fd.set("action", "up");
+    await fetch(`/party/${userId}/vote/${songId}`, {
+      method: "POST",
+      body: fd
+    });
     setInternalRating(ir => ir + 1)
   }, [songId]);
 
-  const voteDown = useCallback(() => {
-  // call to backend to update rating
+  const voteDown = useCallback(async () => {
+    const fd = new FormData();
+    fd.set("action", "down");
+    await fetch(`/party/${userId}/vote/${songId}`, {
+      method: "POST",
+      body: fd
+    });
     setInternalRating(ir => ir - 1)
   }, [songId]);
 
