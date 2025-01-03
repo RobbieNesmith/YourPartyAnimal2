@@ -17,6 +17,10 @@ model User {
   id Int @id @default(autoincrement())
   name String
   songs Song[]
+  promotion_enabled Boolean @default(true)
+  promotion_value Int @default(5)
+  removal_enabled Boolean @default(true)
+  removal_value Int @default(-10)
   @@map("users")
 }
 
