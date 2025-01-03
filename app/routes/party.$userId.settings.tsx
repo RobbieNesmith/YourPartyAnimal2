@@ -1,8 +1,9 @@
 import { Button, Checkbox, FormControlLabel, Stack, TextField } from "@mui/material";
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { bool, boolean, number, object } from "yup";
 import { prisma } from "~/prisma.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -12,6 +13,51 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response("User not found.", { status: 404 });
   }
   return json({ user });
+}
+
+function validateSettings(formData: FormData) {
+  let settingsSchema = object({
+    promotionEnabled: boolean().required(),
+    promotionScore: number().required().moreThan(0).integer(),
+    removalEnabled: bool().required(),
+    removalScore: number().required().lessThan(0).integer(),
+  });
+
+  const settingsObject = {} as {[key: string]: FormDataEntryValue | null};
+
+  settingsObject["promotionEnabled"] = formData.get("promotionEnabled") ? "true" : "false";
+  settingsObject["promotionScore"] = formData.get("promotionScore");
+  settingsObject["removalEnabled"] = formData.get("removalEnabled") ? "true" : "false";
+  settingsObject["removalScore"] = formData.get("removalScore");
+
+
+  return settingsSchema.cast(settingsObject);
+}
+
+export async function action({ params, request }: ActionFunctionArgs) {
+  const idNum = parseInt(params.userId || "0");
+  const formData = await request.formData();
+  try {
+    const settings = await validateSettings(formData);
+    const user = await prisma.user.findUnique({ where: { id: idNum } });
+    if (user == null) {
+      throw new Response("User not found.", { status: 404 });
+    }
+
+    const newUser = await prisma.user.update({
+      where: {id: idNum},
+      data: {
+        promotion_enabled: settings.promotionEnabled,
+        promotion_value: settings.promotionScore,
+        removal_enabled: settings.removalEnabled,
+        removal_value: settings.removalScore,
+      }
+    });
+
+    return { user: newUser };
+  } catch (exception) {
+    throw new Response(`Invalid Request!:\n${exception}`, { status: 400 });
+  }
 }
 
 interface SettingsInputs {
@@ -48,6 +94,7 @@ export default function PartySettings() {
           <FormControlLabel
             control={
               <Checkbox
+                name="promotionEnabled"
                 defaultChecked={user.promotion_enabled}
               />
             }
@@ -64,6 +111,7 @@ export default function PartySettings() {
           <FormControlLabel
             control={
               <Checkbox
+                name="removalEnabled"
                 defaultChecked={user.removal_enabled}
               />
             }
