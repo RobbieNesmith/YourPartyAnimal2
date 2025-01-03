@@ -2,7 +2,7 @@ import { Button, Checkbox, FormControlLabel, InputLabel, Stack, TextField } from
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { prisma } from "~/prisma.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -67,7 +67,7 @@ export default function PartySettings() {
             error={!!errors.removalScore}
             helperText={errors.removalScore && "Removal score must be less than 0."} />
           <p>When song removal is active and a song reaches a score of this value or below, it is removed from the queue.</p>
-          <Button type="submit">Save Settings</Button>
+          <Button disabled={submitting} type="submit">Save Settings</Button>
         </Stack>
       </form>
     </>
