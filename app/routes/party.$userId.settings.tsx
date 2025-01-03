@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, InputLabel, Stack, TextField } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Stack, TextField } from "@mui/material";
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useState } from "react";
@@ -46,22 +46,32 @@ export default function PartySettings() {
       <form method="POST" onSubmit={validate}>
         <Stack direction="column">
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Checkbox
+                defaultChecked={user.promotion_enabled}
+              />
+            }
             label="Enable song promotion by voting"
           />
           <TextField
             {...register("promotionScore", {required: true, min: 1})}
+            defaultValue={user.promotion_value}
             type="number"
             label="Promotion Score"
             error={!!errors.promotionScore}
             helperText={errors.promotionScore && "Promotion score must be greater than 0."} />
           <p>When song promotion is active, this is the score increment required for a song to be promoted one place ahead in the queue. The negative of this value will cause a song to be demoted one place back.</p>
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Checkbox
+                defaultChecked={user.removal_enabled}
+              />
+            }
             label="Enable song removal by voting"
           />
           <TextField
             {...register("removalScore", {required: true, max: -1})}
+            defaultValue={user.removal_value}
             type="number"
             label="Removal Score"
             error={!!errors.removalScore}
