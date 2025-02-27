@@ -12,9 +12,9 @@ export async function enqueueSong(userId: number, id: string, name: string) {
 export async function getNowPlaying(userId: number) {
   return await prisma.song.findFirst({where: {
     user_id: userId,
-    played_at: {not: null}
+    played_at: null,
   },
-  orderBy: {played_at: "desc"}});
+  orderBy: {requested_at: "asc"}});
 }
 
 export async function getQueuedSongs(userId: number) {
