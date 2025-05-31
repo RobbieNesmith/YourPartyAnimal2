@@ -15,9 +15,9 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.0",
     "@prisma/client": "^5.22.0",
-    "@remix-run/node": "^2.11.2",
-    "@remix-run/react": "^2.11.2",
-    "@remix-run/serve": "^2.11.2",
+    "@remix-run/node": "^2.16.8",
+    "@remix-run/react": "^2.16.8",
+    "@remix-run/serve": "^2.16.8",
     "isbot": "^4.1.0",
     "prisma": "^5.22.0",
     "react": "18.3.0-canary-01ab35a9a-20240228",
@@ -28,7 +28,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.11.2",
+    "@remix-run/dev": "^2.16.8",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/youtube-player": "^5.5.11",
