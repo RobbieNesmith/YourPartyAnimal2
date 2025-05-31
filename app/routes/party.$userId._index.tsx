@@ -26,17 +26,15 @@ export default function PartyView() {
   );
 
   return (
-    <Stack>
+    <Stack sx={{height: "100%"}}>
       <h1>Welcome to {user.name}'s party</h1>
       <div>
         <h2>Now Playing</h2>
         <div>{nowPlaying?.name || "Nothing yet" }</div>
       </div>
       <Button href={`/party/${user.id}/queue/add`}>Add a song</Button>
-      <div>
         <h2>Queued Songs</h2>
         <GuestSongQueue queuedSongs={queuedSongsWithCorrectDates} />
-      </div>
     </Stack>
   );
 }
