@@ -67,7 +67,7 @@ export default function AddToQueueView() {
           <Button type="submit" disabled={searching}>Search</Button>
         </Stack>
       </form>
-      <div style={{flexGrow: 1}}>
+      <div style={{flexGrow: 1, overflow: "auto"}}>
         <SearchResultsList partyId={user.id} results={results} />
       </div>
       <Button href={`/party/${user.id}`}>Back</Button>
