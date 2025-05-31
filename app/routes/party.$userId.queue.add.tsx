@@ -59,15 +59,18 @@ export default function AddToQueueView() {
   };
 
   return (
-    <div>
+    <Stack sx={{height: "100%"}}>
       <h1>Add a song to {user.name}'s party</h1>
       <form onSubmit={handleSubmit(handleSearch)}>
         <Stack direction="row">
-          <TextField label="Search" {...register("q", { required: true })} />
+          <TextField sx={{flexGrow: 1}} label="Search" {...register("q", { required: true })} />
           <Button type="submit" disabled={searching}>Search</Button>
         </Stack>
       </form>
-      <SearchResultsList partyId={user.id} results={results} />
-    </div>
+      <div style={{flexGrow: 1}}>
+        <SearchResultsList partyId={user.id} results={results} />
+      </div>
+      <Button href={`/party/${user.id}`}>Back</Button>
+    </Stack>
   );
 }
