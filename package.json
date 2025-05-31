@@ -22,7 +22,7 @@
     "prisma": "^5.22.0",
     "react": "18.3.0-canary-01ab35a9a-20240228",
     "react-dom": "18.3.0-canary-01ab35a9a-20240228",
-    "react-hook-form": "^7.53.2",
+    "react-hook-form": "^7.56.4",
     "react-youtube": "^10.1.0",
     "youtube-search-api-ts": "^1.2.8",
     "yup": "^1.6.1"
