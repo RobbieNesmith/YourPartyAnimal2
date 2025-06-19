@@ -3,6 +3,7 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import GuestSongQueue from "~/components/GuestSongQueue";
+import NowPlaying from "~/components/NowPlaying";
 import { prisma } from "~/prisma.server";
 import { getNowPlaying, getQueuedSongs } from "~/services/QueueService";
 
@@ -22,14 +23,18 @@ export default function PartyView() {
 
   return (
     <Stack sx={{height: "100%"}}>
-      <h1>Welcome to {user.name}'s party</h1>
-      <div>
+      <header className="section main">
+        <h1>Welcome to {user.name}'s party</h1>
+      </header>
+      <div className="section">
         <h2>Now Playing</h2>
-        <div>{nowPlaying?.name || "Nothing yet" }</div>
+        <NowPlaying song={nowPlaying} />
       </div>
-      <Button href={`/party/${user.id}/queue/add`}>Add a song</Button>
+      <Button className="section action" href={`/party/${user.id}/queue/add`}>Add a song</Button>
+      <div className="section" style={{ display: "flex", flexDirection: "column", flexGrow: 1, overflow: "hidden" }}>
         <h2>Queued Songs</h2>
         <GuestSongQueue queuedSongs={queuedSongs} />
+      </div>
     </Stack>
   );
 }

@@ -4,12 +4,34 @@
 
 body {
   margin: 0;
-  padding: 0.5rem;
   height: 100vh;
 }
 
 .queueList {
   padding: 0;
+  margin: 0;
   list-style: none;
   overflow: auto;
+  background-color: white;
+}
+
+.section {
+  padding: 0.5rem;
+  background-color: #aed1f5;
+  box-shadow: .25rem .25rem .25rem rgba(255, 255, 255, 0.5) inset, -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, 0.25) inset;
+}
+
+.main {
+  background-color: #f5e3ae;
+}
+
+.action {
+  background-color: #aef5bd !important;
+}
+
+.inset {
+  background-color: white;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  box-shadow: .25rem .25rem .25rem rgba(255, 255, 255, 0.5), -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, 0.25);
 }

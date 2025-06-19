@@ -12,8 +12,10 @@ export default function SearchResultsList({partyId, results}: {partyId: number, 
   }
 
   return (
-    <ul className="queueList">
-      {results.items.map(item => <SearchResultsEntry partyId={partyId} item={item} key={item.id} />)}
-    </ul>
+    <div className="inset" style={{ overflow: "auto"}}>
+      <ul className="queueList">
+        {results.items.map(item => <SearchResultsEntry partyId={partyId} item={item} key={item.id} />)}
+      </ul>
+    </div>
   );
 }
