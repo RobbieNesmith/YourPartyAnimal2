@@ -17,16 +17,16 @@ body {
 
 .section {
   padding: 0.5rem;
-  background-color: #71b8fe;
+  background: linear-gradient(0, #71b8fe, #9ecfff);
   box-shadow: .25rem .25rem .25rem rgba(255, 255, 255, 0.5) inset, -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, 0.25) inset;
 }
 
 .main {
-  background-color: #feba71;
+  background: linear-gradient(0, #feba71, #ffc98f);
 }
 
 .action {
-  background-color: #76ee80 !important;
+  background: linear-gradient(0, #76ee80, #a3f6aa);
 }
 
 .inset {
