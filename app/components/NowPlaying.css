@@ -1,3 +1,4 @@
-.nowPlaying {
-  display: flex;
+.nowPlaying img {
+  display: block;
+  margin: auto;
 }

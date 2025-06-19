@@ -27,7 +27,6 @@ export default function PartyView() {
         <h1>Welcome to {user.name}'s party</h1>
       </header>
       <div className="section">
-        <h2>Now Playing</h2>
         <NowPlaying song={nowPlaying} />
       </div>
       <Button className="section action" href={`/party/${user.id}/queue/add`}>Add a song</Button>
