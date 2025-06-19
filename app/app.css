@@ -24,6 +24,10 @@ body {
 .section h2 {
   margin: 0.5rem;
   background-color: #c3e1ff;
+  border-top: solid #499df1 1px;
+  border-left: solid #499df1 1px;
+  border-right: solid #e3f1ff 1px;
+  border-bottom: solid #e3f1ff 1px;
   padding: 0.25rem;
 }
 
@@ -35,6 +39,10 @@ body {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   background-color: #ffdfbc;
+  border-top: solid #f49631 1px;
+  border-left: solid #f49631 1px;
+  border-right: solid #ffefde 1px;
+  border-bottom: solid #ffefde 1px;
   padding: 0.25rem;
 }
 
