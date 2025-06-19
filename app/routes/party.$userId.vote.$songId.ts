@@ -1,4 +1,5 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { typedjson } from "remix-typedjson";
 import { downvoteSong, upvoteSong } from "~/services/QueueService";
 
 export function loader() {
@@ -17,12 +18,12 @@ export async function action({request, params}: LoaderFunctionArgs) {
     if (action === "up") {
       const updatedSong = await upvoteSong(userId, songId);
 
-      return json(updatedSong);
+      return typedjson(updatedSong);
     }
     if (action === "down") {
       const updatedSong = await downvoteSong(userId, songId);
 
-      return json(updatedSong);
+      return typedjson(updatedSong);
     }
     throw new Response("Invalid vote", { status: 400 });
   } catch {

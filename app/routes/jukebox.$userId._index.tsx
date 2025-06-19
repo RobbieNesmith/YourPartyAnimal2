@@ -1,7 +1,8 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
 import { getNowPlaying, getQueuedSongs } from "~/services/QueueService";
 
@@ -18,11 +19,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
   const nowPlaying = await getNowPlaying(user.id);
   const queuedSongs = await getQueuedSongs(user.id);
-  return json({ user, nowPlaying, queuedSongs });
+  return typedjson({ user, nowPlaying, queuedSongs });
 }
 
 export default function DjPartyView() {
-  const {user, nowPlaying, queuedSongs} = useLoaderData<typeof loader>();
+  const {user, nowPlaying, queuedSongs} = useTypedLoaderData<typeof loader>();
   const [actualNowPlaying, setActualNowPlaying] = useState(nowPlaying);
   const [actualQueue, setActualQueue] = useState(queuedSongs);
 

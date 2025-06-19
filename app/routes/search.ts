@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/react";
+import { typedjson } from "remix-typedjson";
 import { YoutubeSearchApi } from "youtube-search-api-ts";
 
 export async function loader({request} : LoaderFunctionArgs) {
@@ -10,5 +10,5 @@ export async function loader({request} : LoaderFunctionArgs) {
   }
   const api = new YoutubeSearchApi();
   const results = await api.search(searchString, false, 10, [{type: "video"}]);
-  return json(results);
+  return typedjson(results);
 }

@@ -8,6 +8,7 @@ import { searchYoutube } from "~/services/YoutubeService";
 import { prisma } from "~/prisma.server";
 import { Button, Stack, TextField } from "@mui/material";
 import SearchResultsList from "~/components/SearchResultsList";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   var idNum = parseInt(params.userId || "0");
@@ -15,7 +16,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (user == null) {
     throw new Response("User not found.", { status: 404 });
   }
-  return json({ user });
+  return typedjson({ user });
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -47,7 +48,7 @@ type SearchFormInputs = {
 };
 
 export default function AddToQueueView() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useTypedLoaderData<typeof loader>();
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState(null as SearchOutput | null);
   const { handleSubmit, register } = useForm<SearchFormInputs>();

@@ -3,6 +3,7 @@ import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { bool, boolean, number, object } from "yup";
 import { prisma } from "~/prisma.server";
 
@@ -12,7 +13,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (user == null) {
     throw new Response("User not found.", { status: 404 });
   }
-  return json({ user });
+  return typedjson({ user });
 }
 
 function validateSettings(formData: FormData) {
@@ -69,7 +70,7 @@ interface SettingsInputs {
 
 export default function PartySettings() {
   const [submitting, setSubmitting] = useState(false);
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useTypedLoaderData<typeof loader>();
   const {
     register,
     trigger,
