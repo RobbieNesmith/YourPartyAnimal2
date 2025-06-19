@@ -17,16 +17,16 @@ body {
 
 .section {
   padding: 0.5rem;
-  background-color: #aed1f5;
+  background-color: #71b8fe;
   box-shadow: .25rem .25rem .25rem rgba(255, 255, 255, 0.5) inset, -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, 0.25) inset;
 }
 
 .main {
-  background-color: #f5e3ae;
+  background-color: #feba71;
 }
 
 .action {
-  background-color: #aef5bd !important;
+  background-color: #76ee80 !important;
 }
 
 .inset {
