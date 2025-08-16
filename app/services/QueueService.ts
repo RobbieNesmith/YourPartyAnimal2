@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import {prisma} from "~/prisma.server"
 
 export async function enqueueSong(userId: number, id: string, name: string) {
@@ -18,10 +19,22 @@ export async function getNowPlaying(userId: number) {
 }
 
 export async function getQueuedSongs(userId: number) {
-  return await prisma.song.findMany({where: {
+  const user = await prisma.user.findFirst({where: {id: userId}});
+
+  if (!user) {
+    return [];
+  }
+
+  const whereClause: Prisma.SongWhereInput = {
     user_id: userId,
-    played_at: null
-  },
+    played_at: null,
+  };
+
+  if (user.removal_enabled) {
+    whereClause.rating = { gt: user.removal_value }
+  }
+
+  return await prisma.song.findMany({where: whereClause,
   orderBy: {requested_at: "asc"}});
 }
 
