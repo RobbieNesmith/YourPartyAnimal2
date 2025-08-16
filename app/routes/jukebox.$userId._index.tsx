@@ -1,10 +1,11 @@
+import { Song } from "@prisma/client";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
-import { getNowPlaying, getQueuedSongs } from "~/services/QueueService";
+import { getNowPlaying, getQueuedSongs, markSongAsPlayed } from "~/services/QueueService";
 
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -28,6 +29,8 @@ export default function DjPartyView() {
   const [actualQueue, setActualQueue] = useState(queuedSongs);
 
   const getNextSong = useCallback(async () => {
+    const queuedSongsResponse = await fetch(`/jukebox/${user.id}/getQueuedSongs`);
+    const queuedSongs = await queuedSongsResponse.json() as Song[];
     const nextSong = queuedSongs[1];
     if (actualNowPlaying) {
       await fetch(`/jukebox/${user.id}/markPlayed/${actualNowPlaying.id}`,
