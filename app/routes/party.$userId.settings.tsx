@@ -1,6 +1,5 @@
 import { Button, Checkbox, FormControlLabel, Stack, TextField } from "@mui/material";
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -17,7 +16,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 function validateSettings(formData: FormData) {
-  let settingsSchema = object({
+  const settingsSchema = object({
     promotionEnabled: boolean().required(),
     promotionScore: number().required().moreThan(0).integer(),
     removalEnabled: bool().required(),
@@ -88,7 +87,7 @@ export default function PartySettings() {
 
   return (
     <>
-      <h1>Settings for {user.name}'s party</h1>
+      <h1>Settings for {user.name}&apos;s party</h1>
 
       <form method="POST" onSubmit={validate}>
         <Stack direction="column">

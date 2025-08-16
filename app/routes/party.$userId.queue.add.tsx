@@ -1,5 +1,4 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SearchOutput, YoutubeSearchApi } from "youtube-search-api-ts";
@@ -11,8 +10,8 @@ import SearchResultsList from "~/components/SearchResultsList";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  var idNum = parseInt(params.userId || "0");
-  var user = await prisma.user.findUnique({ where: { id: idNum } });
+  const idNum = parseInt(params.userId || "0");
+  const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });
   }
@@ -62,7 +61,7 @@ export default function AddToQueueView() {
   return (
     <Stack sx={{height: "100%"}}>
       <header className="section main">
-        <h1>Add a song to {user.name}'s party</h1>
+        <h1>Add a song to {user.name}&apos;s party</h1>
       </header>
       <form onSubmit={handleSubmit(handleSearch)}>
         <Stack direction="row">

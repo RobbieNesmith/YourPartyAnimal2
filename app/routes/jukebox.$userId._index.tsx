@@ -1,11 +1,10 @@
 import { Song } from "@prisma/client";
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
-import { getNowPlaying, getQueuedSongs, markSongAsPlayed } from "~/services/QueueService";
+import { getNowPlaying } from "~/services/QueueService";
 
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -19,14 +18,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response("User not found.", { status: 404 });
   }
   const nowPlaying = await getNowPlaying(user.id);
-  const queuedSongs = await getQueuedSongs(user.id);
-  return typedjson({ user, nowPlaying, queuedSongs });
+  return typedjson({ user, nowPlaying });
 }
 
 export default function DjPartyView() {
-  const {user, nowPlaying, queuedSongs} = useTypedLoaderData<typeof loader>();
+  const {user, nowPlaying} = useTypedLoaderData<typeof loader>();
   const [actualNowPlaying, setActualNowPlaying] = useState(nowPlaying);
-  const [actualQueue, setActualQueue] = useState(queuedSongs);
 
   const getNextSong = useCallback(async () => {
     const queuedSongsResponse = await fetch(`/jukebox/${user.id}/getQueuedSongs`);
@@ -37,15 +34,14 @@ export default function DjPartyView() {
         {method: "POST"}
       );
     }
-    setActualQueue(aq => aq.slice(1));
     setActualNowPlaying(nextSong);
-  }, [actualQueue, setActualNowPlaying, setActualQueue]);
+  }, [user.id, actualNowPlaying, setActualNowPlaying]);
 
   useEffect(() => {
     if (!actualNowPlaying) {
       getNextSong();
     }
-  }, [actualNowPlaying]);
+  }, [actualNowPlaying, getNextSong]);
 
   if (!actualNowPlaying) {
     return "Nothing to see here";
@@ -53,7 +49,7 @@ export default function DjPartyView() {
 
   return (
     <div>
-      <h1>{user.name}'s Party</h1>
+      <h1>{user.name}&apos;s Party</h1>
       <YouTubeElement
         opts={{playerVars: {autoplay: 1}}}
         videoId={actualNowPlaying?.video_id}

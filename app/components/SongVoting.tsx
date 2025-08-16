@@ -12,7 +12,7 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
 
   useEffect(() => {
     localStorage.setItem(`partyanimal-voted-${songId}`, `${vote}`);
-  }, [vote]);
+  }, [vote, songId]);
 
   const voteUp = useCallback(async () => {
     if (vote <= 0) {
@@ -25,7 +25,7 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
       setInternalRating(ir => ir + 1);
       setVote(v => v + 1);
     }
-  }, [songId, vote]);
+  }, [userId, songId, vote]);
 
   const voteDown = useCallback(async () => {
     if (vote >= 0) {
@@ -38,7 +38,7 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
       setInternalRating(ir => ir - 1);
       setVote(v => v - 1);
     }
-  }, [songId, vote]);
+  }, [userId, songId, vote]);
 
   return (
     <div className="votingContainer">

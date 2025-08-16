@@ -1,4 +1,4 @@
-import { SearchOutput, Video } from "youtube-search-api-ts";
+import { SearchOutput } from "youtube-search-api-ts";
 import SearchResultsEntry from "./SearchResultsEntry";
 
 export default function SearchResultsList({partyId, results}: {partyId: number, results: SearchOutput | null}) {

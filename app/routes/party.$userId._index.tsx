@@ -1,6 +1,5 @@
 import { Button, Stack } from "@mui/material";
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import GuestSongQueue from "~/components/GuestSongQueue";
 import NowPlaying from "~/components/NowPlaying";
@@ -24,7 +23,7 @@ export default function PartyView() {
   return (
     <Stack sx={{height: "100%"}}>
       <header className="section main">
-        <h1>Welcome to {user.name}'s party</h1>
+        <h1>Welcome to {user.name}&apos;s party</h1>
       </header>
       <div className="section">
         <NowPlaying song={nowPlaying} />
