@@ -25,7 +25,7 @@ export function computeNowPlayingOrder(song: Song, index: number, promotionValue
   if (Math.abs(rating) >= promotionValue) {
     const numPromotions = Math.trunc(rating / promotionValue);
     const offset = Math.sign(rating) * 0.5;
-    newIndex += numPromotions + offset;
+    newIndex -= (numPromotions + offset);
   }
 
   return {song, index: newIndex};
