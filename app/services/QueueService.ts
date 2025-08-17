@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Song } from "@prisma/client";
 import {prisma} from "~/prisma.server"
 
 export async function enqueueSong(userId: number, id: string, name: string) {
@@ -18,6 +18,19 @@ export async function getNowPlaying(userId: number) {
   orderBy: {requested_at: "asc"}});
 }
 
+function computeNowPlayingOrder(song: Song, index: number, promotionValue: number) {
+  let newIndex = index;
+  const rating = song.rating;
+
+  if (Math.abs(rating) >= promotionValue) {
+    const numPromotions = Math.trunc(rating / promotionValue);
+    const offset = Math.sign(rating) * 0.5;
+    newIndex += numPromotions + offset;
+  }
+
+  return {song, index: newIndex};
+}
+
 export async function getQueuedSongs(userId: number) {
   const user = await prisma.user.findFirst({where: {id: userId}});
 
@@ -34,8 +47,15 @@ export async function getQueuedSongs(userId: number) {
     whereClause.rating = { gt: user.removal_value }
   }
 
-  return await prisma.song.findMany({where: whereClause,
-  orderBy: {requested_at: "asc"}});
+  const nowPlaying = await prisma.song.findMany({
+    where: whereClause,
+    orderBy: { requested_at: "asc" }
+  });
+
+  const nowPlayingWithIndices = nowPlaying.map((song, index) => computeNowPlayingOrder(song, index, user.promotion_value));
+  nowPlayingWithIndices.sort((a, b) => a.index - b.index);
+
+  return nowPlaying;
 }
 
 export async function upvoteSong(userId: number, songId: number) {
