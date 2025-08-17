@@ -18,7 +18,7 @@ export async function getNowPlaying(userId: number) {
   orderBy: {requested_at: "asc"}});
 }
 
-function computeNowPlayingOrder(song: Song, index: number, promotionValue: number) {
+export function computeNowPlayingOrder(song: Song, index: number, promotionValue: number) {
   let newIndex = index;
   const rating = song.rating;
 
