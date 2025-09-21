@@ -1,19 +1,22 @@
 import { Prisma, Song } from "@prisma/client";
 import {prisma} from "~/prisma.server"
 
-export async function enqueueSong(userId: number, id: string, name: string) {
+export async function enqueueSong(userId: number, id: string, name: string, preset: boolean = false) {
   await prisma.song.create({data: {
     user_id: userId,
     video_id: id,
     name: name,
     requested_at: new Date(),
-    rating: 0}});
+    rating: 0,
+    preset: preset,
+  }});
 }
 
 export async function getNowPlaying(userId: number) {
   return await prisma.song.findFirst({where: {
     user_id: userId,
     played_at: null,
+    preset: false,
   },
   orderBy: {requested_at: "asc"}});
 }
@@ -41,6 +44,7 @@ export async function getQueuedSongs(userId: number) {
   const whereClause: Prisma.SongWhereInput = {
     user_id: userId,
     played_at: null,
+    preset: false,
   };
 
   if (user.removal_enabled) {
