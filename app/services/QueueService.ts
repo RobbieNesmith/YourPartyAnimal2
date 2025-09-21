@@ -63,16 +63,8 @@ export async function getQueuedSongs(userId: number, includePresets: boolean = f
   const whereClause: Prisma.SongWhereInput = {
     user_id: userId,
     played_at: null,
+    preset: false
   };
-
-  if (includePresets == false) {
-    whereClause.preset = false;
-  } else {
-    whereClause.OR = [{
-      user_id: userId,
-      preset: true,
-    }]
-  }
 
   if (user.removal_enabled) {
     whereClause.rating = { gt: user.removal_value }
@@ -80,15 +72,16 @@ export async function getQueuedSongs(userId: number, includePresets: boolean = f
 
   const nowPlaying = await prisma.song.findMany({
     where: whereClause,
-    orderBy: [
-      { preset: "asc" },
-      { played_at: {sort: "asc", nulls: "first"} },
-      { requested_at: "asc" },
-    ]
+    orderBy: { requested_at: "asc" }
   });
 
   const nowPlayingWithIndices = nowPlaying.map((song, index) => computeNowPlayingOrder(song, index, user.promotion_value));
   nowPlayingWithIndices.sort((a, b) => a.index - b.index);
+
+  if (includePresets) {
+    const presets = await getPresetSongs(userId);
+    return [...nowPlaying, ...presets];
+  }
 
   return nowPlaying;
 }
