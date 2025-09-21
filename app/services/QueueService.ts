@@ -97,7 +97,11 @@ export async function getPresetSongs(userId: number) {
     where: {
       user_id: userId,
       preset: true,
-    }
+    },
+    orderBy: [
+      { played_at: {sort: "asc", nulls: "first"} },
+      { requested_at: "asc" }
+    ]
   });
 }
 
