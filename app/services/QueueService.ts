@@ -103,7 +103,6 @@ export async function getPresetSongs(userId: number) {
   return await prisma.song.findMany({
     where: {
       user_id: userId,
-      played_at: null,
       preset: true,
     }
   });
