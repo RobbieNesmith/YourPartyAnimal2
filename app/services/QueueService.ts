@@ -53,7 +53,7 @@ export function computeNowPlayingOrder(song: Song, index: number, promotionValue
   return {song, index: newIndex};
 }
 
-export async function getQueuedSongs(userId: number) {
+export async function getQueuedSongs(userId: number, includePresets: boolean = false) {
   const user = await prisma.user.findFirst({where: {id: userId}});
 
   if (!user) {
@@ -63,8 +63,16 @@ export async function getQueuedSongs(userId: number) {
   const whereClause: Prisma.SongWhereInput = {
     user_id: userId,
     played_at: null,
-    preset: false,
   };
+
+  if (includePresets == false) {
+    whereClause.preset = false;
+  } else {
+    whereClause.OR = [{
+      user_id: userId,
+      preset: true,
+    }]
+  }
 
   if (user.removal_enabled) {
     whereClause.rating = { gt: user.removal_value }
@@ -72,7 +80,11 @@ export async function getQueuedSongs(userId: number) {
 
   const nowPlaying = await prisma.song.findMany({
     where: whereClause,
-    orderBy: { requested_at: "asc" }
+    orderBy: [
+      { preset: "asc" },
+      { played_at: {sort: "asc", nulls: "first"} },
+      { requested_at: "asc" },
+    ]
   });
 
   const nowPlayingWithIndices = nowPlaying.map((song, index) => computeNowPlayingOrder(song, index, user.promotion_value));
