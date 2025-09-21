@@ -33,5 +33,6 @@ model Song {
   rating Int
   requested_at DateTime
   played_at DateTime?
+  preset Boolean @default(false)
   @@map("songs")
 }
