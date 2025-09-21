@@ -10,15 +10,27 @@ import SearchResultsList from "~/components/SearchResultsList";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 
 export async function loader({ params }: LoaderFunctionArgs) {
+  const destination = params.destination;
+
+  if (destination != "queue" && destination != "preset") {
+    throw new Response("Not Found", { status: 404 });
+  }
+
   const idNum = parseInt(params.userId || "0");
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });
   }
-  return typedjson({ user });
+  return typedjson({ user, destination: destination as "queue" | "preset" });
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  const destination = params.destination;
+
+  if (destination != "queue" && destination != "preset") {
+    throw new Response("Not Found", { status: 404 });
+  }
+
   const userId = params.userId;
   if (!userId) {
     throw new Response("Not Found", { status: 404 });
@@ -37,7 +49,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const api = new YoutubeSearchApi();
   const videoDetails = await api.getVideoDetails(id);
 
-  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title);
+  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title, destination == "preset");
 
   return redirect(`/party/${userId}`);
 }
@@ -47,7 +59,7 @@ type SearchFormInputs = {
 };
 
 export default function AddToQueueView() {
-  const { user } = useTypedLoaderData<typeof loader>();
+  const { user, destination } = useTypedLoaderData<typeof loader>();
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState(null as SearchOutput | null);
   const { handleSubmit, register } = useForm<SearchFormInputs>();
@@ -72,7 +84,7 @@ export default function AddToQueueView() {
         </Stack>
       </form>
       <Stack direction="column" className="section" style={{flexGrow: 1, overflow: "hidden"}}>
-        <SearchResultsList partyId={user.id} results={results} />
+        <SearchResultsList partyId={user.id} results={results} destination={destination} />
       </Stack>
       <Button className="section action" href={`/party/${user.id}`}>Back</Button>
     </Stack>

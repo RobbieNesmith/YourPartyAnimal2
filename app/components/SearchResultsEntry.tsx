@@ -2,12 +2,20 @@ import { Button } from "@mui/material";
 import { Video } from "youtube-search-api-ts";
 import ListItem from "./ListItem";
 
-export default function SearchResultsEntry({partyId, item}: {partyId: number, item: Video}) {
+interface SearchResultsEntryProps {
+  partyId: number;
+  item: Video;
+  destination: "queue" | "preset";
+}
+
+export default function SearchResultsEntry({partyId, item, destination}: SearchResultsEntryProps) {
+  const buttonText = destination == "queue" ? "Add to Queue" : "Add Preset";
+
   return (
     <ListItem key={item.id!} imageUrl={`https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`} title={item.title!}>
-      <form action={`/party/${partyId}/queue/add`} method="POST">
+      <form action={`/party/${partyId}/${destination}/add`} method="POST">
         <input type="hidden" name="id" value={item.id} />
-        <Button type="submit">Add to Queue</Button>
+        <Button type="submit">{buttonText}</Button>
       </form>
     </ListItem>
   );
