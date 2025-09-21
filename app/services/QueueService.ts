@@ -13,12 +13,31 @@ export async function enqueueSong(userId: number, id: string, name: string, pres
 }
 
 export async function getNowPlaying(userId: number) {
-  return await prisma.song.findFirst({where: {
+  const nowPlaying = await prisma.song.findFirst({where: {
     user_id: userId,
     played_at: null,
     preset: false,
   },
   orderBy: {requested_at: "asc"}});
+
+  if (nowPlaying == null) {
+    return await prisma.song.findFirst({where: {
+      user_id: userId,
+      preset: true,
+    },
+      orderBy: [{
+        played_at: {
+          sort: "asc",
+          nulls: "first"
+        },
+      },
+      {
+        requested_at: "asc",
+      }]
+    });
+  }
+
+  return nowPlaying;
 }
 
 export function computeNowPlayingOrder(song: Song, index: number, promotionValue: number) {
