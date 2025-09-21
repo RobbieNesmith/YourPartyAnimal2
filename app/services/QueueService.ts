@@ -62,6 +62,22 @@ export async function getQueuedSongs(userId: number) {
   return nowPlaying;
 }
 
+export async function getPresetSongs(userId: number) {
+  const user = await prisma.user.findFirst({ where: { id: userId } });
+
+  if (!user) {
+    return [];
+  }
+
+  return await prisma.song.findMany({
+    where: {
+      user_id: userId,
+      played_at: null,
+      preset: true,
+    }
+  });
+}
+
 export async function upvoteSong(userId: number, songId: number) {
   const updatedSong = prisma.song.update({
     where: { user_id: userId, id: songId },
