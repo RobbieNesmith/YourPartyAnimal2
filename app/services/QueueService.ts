@@ -1,7 +1,7 @@
 import { Prisma, Song } from "@prisma/client";
 import {prisma} from "~/prisma.server"
 
-export async function enqueueSong(userId: number, id: string, name: string, preset: boolean = false) {
+export async function enqueueSong(userId: number, id: string, name: string, guestId: string | null, preset: boolean = false) {
   await prisma.song.create({data: {
     user_id: userId,
     video_id: id,
@@ -9,6 +9,7 @@ export async function enqueueSong(userId: number, id: string, name: string, pres
     requested_at: new Date(),
     rating: 0,
     preset: preset,
+    requested_by: guestId,
   }});
 }
 

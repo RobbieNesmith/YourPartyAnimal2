@@ -46,10 +46,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!id) {
     throw new Response("ID is required", { status: 400 });
   }
+  const guestId = form.get("guestId") as string | null;
+  if (destination === "queue") {
+    if (!guestId) {
+      throw new Response("Guest ID is required", { status: 400 });
+    }
+  }
   const api = new YoutubeSearchApi();
   const videoDetails = await api.getVideoDetails(id);
 
-  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title, destination == "preset");
+  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title, guestId, destination == "preset");
 
   return redirect(`/party/${userId}`);
 }
