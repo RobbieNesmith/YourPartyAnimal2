@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { Video } from "youtube-search-api-ts";
 import ListItem from "./ListItem";
-import UserIdManager from "./UserIdManager";
+import UserIdInput from "./UserIdInput";
 
 interface SearchResultsEntryProps {
   partyId: number;
@@ -16,7 +16,7 @@ export default function SearchResultsEntry({partyId, item, destination}: SearchR
     <ListItem key={item.id!} imageUrl={`https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`} title={item.title!}>
       <form action={`/party/${partyId}/${destination}/add`} method="POST">
         <input type="hidden" name="id" value={item.id} />
-        <UserIdManager />
+        <UserIdInput />
         <Button type="submit">{buttonText}</Button>
       </form>
     </ListItem>
