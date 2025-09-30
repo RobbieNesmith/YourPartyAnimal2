@@ -3,12 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import "./SongVoting.css";
 import { useParams } from "@remix-run/react";
 import { getItemOrNull } from "~/services/LocalStorageService";
+import useUserId from "~/hooks/useUserId";
 
 export default function SongVoting({songId, songRating}: {songId: number, songRating: number}) {
   const [internalRating, setInternalRating] = useState(songRating);
   const {userId} = useParams();
   const localVote = parseInt(getItemOrNull(`partyanimal-voted-${songId}`) || "0");
   const [vote, setVote] = useState(localVote);
+  const guestId = useUserId();
 
   useEffect(() => {
     localStorage.setItem(`partyanimal-voted-${songId}`, `${vote}`);
@@ -18,6 +20,7 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
     if (vote <= 0) {
       const fd = new FormData();
       fd.set("action", "up");
+      fd.set("userid", guestId);
       await fetch(`/party/${userId}/vote/${songId}`, {
         method: "POST",
         body: fd
@@ -31,6 +34,7 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
     if (vote >= 0) {
       const fd = new FormData();
       fd.set("action", "down");
+      fd.set("userid", guestId);
       await fetch(`/party/${userId}/vote/${songId}`, {
         method: "POST",
         body: fd
