@@ -1,10 +1,10 @@
 import { Outlet } from "@remix-run/react";
-import { UserIdProvider } from "~/hooks/useUserId";
+import { GuestIdProvider } from "~/hooks/useGuestId";
 
 export default function Party() {
   return (
-    <UserIdProvider>
+    <GuestIdProvider>
       <Outlet />
-    </UserIdProvider>
+    </GuestIdProvider>
   );
 }

@@ -4,23 +4,23 @@ import { getItemOrNull } from "~/services/LocalStorageService";
 
 export const UserIdContext = createContext(null as string | null);
 
-export default function useUserId() {
+export default function useGuestId() {
   const userIdContext = useContext(UserIdContext);
   if (!userIdContext) throw new Error("UserIdProvider not found!");
   return userIdContext;
 }
 
-export function UserIdProvider({children}: {children: ReactNode}) {
-  const [userId, setUserId] = useState<string | null>(getItemOrNull("ypa2-userid"));
+export function GuestIdProvider({children}: {children: ReactNode}) {
+  const [guestId, setGuestId] = useState<string | null>(getItemOrNull("partyanimal-guestid"));
   useEffect(() => {
-    if (!userId) {
+    if (!guestId) {
       const newUserId = Guid.create();
-      setUserId(newUserId.toString());
-      localStorage.setItem("ypa2-userid", JSON.stringify(newUserId.toString()));
+      setGuestId(newUserId.toString());
+      localStorage.setItem("partyanimal-guestid", JSON.stringify(newUserId.toString()));
     }
-  }, [userId]);
+  }, [guestId]);
   return (
-    <UserIdContext.Provider value={userId}>
+    <UserIdContext.Provider value={guestId}>
       { children }
     </UserIdContext.Provider>
   )
