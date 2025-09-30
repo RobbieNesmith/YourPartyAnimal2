@@ -34,5 +34,6 @@ model Song {
   requested_at DateTime
   played_at DateTime?
   preset Boolean @default(false)
+  requested_by String?
   @@map("songs")
 }
