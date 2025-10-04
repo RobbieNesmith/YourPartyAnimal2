@@ -21,6 +21,8 @@ function validateSettings(formData: FormData) {
     promotionScore: number().required().moreThan(0).integer(),
     removalEnabled: bool().required(),
     removalScore: number().required().lessThan(0).integer(),
+    rateLimit: number().required().moreThan(-1).integer(),
+    stopRequests: bool().required(),
   });
 
   const settingsObject = {} as {[key: string]: FormDataEntryValue | null};
@@ -29,7 +31,8 @@ function validateSettings(formData: FormData) {
   settingsObject["promotionScore"] = formData.get("promotionScore");
   settingsObject["removalEnabled"] = formData.get("removalEnabled") ? "true" : "false";
   settingsObject["removalScore"] = formData.get("removalScore");
-
+  settingsObject["rateLimit"] = formData.get("rateLimit");
+  settingsObject["stopRequests"] = formData.get("stopRequests") ? "true" : "false";
 
   return settingsSchema.cast(settingsObject);
 }
@@ -51,6 +54,8 @@ export async function action({ params, request }: ActionFunctionArgs) {
         promotion_value: settings.promotionScore,
         removal_enabled: settings.removalEnabled,
         removal_value: settings.removalScore,
+        rate_limit: settings.rateLimit,
+        stop_requests: settings.stopRequests,
       }
     });
 
@@ -65,6 +70,8 @@ interface SettingsInputs {
   promotionScore: number;
   removalEnabled: boolean;
   removalScore: number;
+  rateLimit: number;
+  stopRequests: boolean;
 }
 
 export default function PartySettings() {
@@ -125,6 +132,23 @@ export default function PartySettings() {
             error={!!errors.removalScore}
             helperText={errors.removalScore && "Removal score must be less than 0."} />
           <p>When song removal is active and a song reaches a score of this value or below, it is removed from the queue.</p>
+          <TextField
+            {...register("rateLimit", { required: true, min: 0 })}
+            defaultValue={user.rate_limit}
+            type="number"
+            label="Rate Limit (minutes)"
+            error={!!errors.rateLimit}
+            helperText={errors.rateLimit && "Rate limit must be at least 0."} />
+            <p>When rate limit is not zero, this is how many minutes guests must wait to add successive songs.</p>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="stopRequests"
+                defaultChecked={user.stop_requests}
+              />
+            }
+            label="Prevent songs from being requested"
+          />
           <Button disabled={submitting} type="submit">Save Settings</Button>
         </Stack>
       </form>
