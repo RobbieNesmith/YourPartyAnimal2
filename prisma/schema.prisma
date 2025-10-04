@@ -21,6 +21,8 @@ model User {
   promotion_value Int @default(5)
   removal_enabled Boolean @default(true)
   removal_value Int @default(-10)
+  rate_limit Int @default(1)
+  stop_requests Boolean @default(false)
   @@map("users")
 }
 
