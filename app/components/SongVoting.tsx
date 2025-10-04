@@ -20,7 +20,9 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
     if (vote <= 0) {
       const fd = new FormData();
       fd.set("action", "up");
-      fd.set("guestId", guestId);
+      if (guestId) {
+        fd.set("guestId", guestId);
+      }
       await fetch(`/party/${userId}/vote/${songId}`, {
         method: "POST",
         body: fd
@@ -34,7 +36,9 @@ export default function SongVoting({songId, songRating}: {songId: number, songRa
     if (vote >= 0) {
       const fd = new FormData();
       fd.set("action", "down");
-      fd.set("guestId", guestId);
+      if (guestId) {
+        fd.set("guestId", guestId);
+      }
       await fetch(`/party/${userId}/vote/${songId}`, {
         method: "POST",
         body: fd
