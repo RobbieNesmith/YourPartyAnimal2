@@ -13,10 +13,18 @@ export async function enqueueSong(userId: number, id: string, name: string, gues
   }});
 }
 
-export async function hasGuestRequestedRecently(userId: number, guestId: string, minutes: number) {
+export async function hasPartyStoppedRequests(userId: number) {
+  const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+
+  return user.stop_requests;
+}
+
+export async function hasGuestRequestedRecently(userId: number, guestId: string) {
+  const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+
   const latestGuestSong = await prisma.song.findFirst({where: {
     user_id: userId,
-    requested_at: {gt: new Date(new Date().getTime() - minutes * 60000)},
+    requested_at: { gt: new Date(new Date().getTime() - user.rate_limit * 60000)},
     preset: false,
     requested_by: guestId
   }});
