@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/nod
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SearchOutput, YoutubeSearchApi } from "youtube-search-api-ts";
-import { enqueueSong } from "~/services/QueueService";
+import { enqueueSong, hasGuestRequestedRecently } from "~/services/QueueService";
 import { searchYoutube } from "~/services/YoutubeService";
 import { prisma } from "~/prisma.server";
 import { Button, Stack, TextField } from "@mui/material";
@@ -50,6 +50,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (destination === "queue") {
     if (!guestId) {
       throw new Response("Guest ID is required", { status: 400 });
+    }
+
+    const requestedRecently = await hasGuestRequestedRecently(userIdInt, guestId, 1);
+    if (requestedRecently) {
+      throw new Response("Requested Recently", { status: 400 });
     }
   }
   const api = new YoutubeSearchApi();

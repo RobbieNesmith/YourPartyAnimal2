@@ -13,6 +13,17 @@ export async function enqueueSong(userId: number, id: string, name: string, gues
   }});
 }
 
+export async function hasGuestRequestedRecently(userId: number, guestId: string, minutes: number) {
+  const latestGuestSong = await prisma.song.findFirst({where: {
+    user_id: userId,
+    requested_at: {lt: new Date(new Date().getTime() - minutes * 60000)},
+    preset: false,
+    requested_by: guestId
+  }});
+
+  return latestGuestSong !== null;
+}
+
 export async function getNowPlaying(userId: number) {
   const nowPlaying = await prisma.song.findFirst({where: {
     user_id: userId,
