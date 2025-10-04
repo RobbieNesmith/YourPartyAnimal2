@@ -13,13 +13,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const destination = params.destination;
 
   if (destination != "queue" && destination != "preset") {
-    throw new Response("Not Found", { status: 404 });
+    throw typedjson({ title: "User Not Found", message: "You can't put a song there." }, { status: 404 });
   }
 
   const idNum = parseInt(params.userId || "0");
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
-    throw new Response("User not found.", { status: 404 });
+    throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist."}, {status: 404});
   }
   return typedjson({ user, destination: destination as "queue" | "preset" });
 }
@@ -28,33 +28,33 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const destination = params.destination;
 
   if (destination != "queue" && destination != "preset") {
-    throw new Response("Not Found", { status: 404 });
+    throw typedjson({ title: "Invalid song destination", message: "You can't put a song there." }, { status: 404 });
   }
 
   const userId = params.userId;
   if (!userId) {
-    throw new Response("Not Found", { status: 404 });
+    throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist." }, { status: 404 });
   }
   const userIdInt = parseInt(userId);
 
   if (!userIdInt) {
-    throw new Response("Not Found", { status: 404 });
+    throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist." }, { status: 404 });
   }
 
   const form = await request.formData();
   const id = form.get("id") as string | null;
   if (!id) {
-    throw new Response("ID is required", { status: 400 });
+    throw typedjson({ title: "Song not provided", message: "You have to say what song you want to add." }, { status: 400 });
   }
   const guestId = form.get("guestId") as string | null;
   if (destination === "queue") {
     if (!guestId) {
-      throw new Response("Guest ID is required", { status: 400 });
+      throw typedjson({ title: "Guest Not Found", message: "Who are you?" }, { status: 404 });
     }
 
     const requestedRecently = await hasGuestRequestedRecently(userIdInt, guestId, 1);
     if (requestedRecently) {
-      throw new Response("Requested Recently", { status: 400 });
+      throw typedjson({ title: "Last Request Too Recent", message: "You requested your last song too recently. Give someone else a chance.",}, {status: 429});
     }
   }
   const api = new YoutubeSearchApi();
