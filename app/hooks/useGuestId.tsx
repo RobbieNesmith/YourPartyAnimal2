@@ -1,13 +1,17 @@
 import { Guid } from "guid-typescript";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { getItemOrNull } from "~/services/LocalStorageService";
 
-export const GuestIdContext = createContext(null as string | null);
+interface GuestIdContextState {
+  guestId: string | null;
+}
+
+export const GuestIdContext = createContext(null as GuestIdContextState | null);
 
 export default function useGuestId() {
   const guestIdContext = useContext(GuestIdContext);
   if (typeof window !== "undefined" && window && !guestIdContext) throw new Error("GuestIdProvider not found!");
-  return guestIdContext;
+  return guestIdContext?.guestId;
 }
 
 export function GuestIdProvider({children}: {children: ReactNode}) {
@@ -19,8 +23,11 @@ export function GuestIdProvider({children}: {children: ReactNode}) {
       localStorage.setItem("partyanimal-guestid", JSON.stringify(newGuestId.toString()));
     }
   }, [guestId]);
+
+  const guestIdState = useMemo(() => ({guestId}), [guestId]);
+
   return (
-    <GuestIdContext.Provider value={guestId}>
+    <GuestIdContext.Provider value={guestIdState}>
       { children }
     </GuestIdContext.Provider>
   )
