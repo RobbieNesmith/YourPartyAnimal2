@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { Authenticator } from "remix-auth";
 import { Auth0Strategy } from "remix-auth-auth0";
 import { LoginUser } from "~/models/LoginUser";
@@ -27,11 +27,12 @@ export let auth0Strategy = new Auth0Strategy(
     scopes: ["openid", "email"]
   },
   async ({ tokens, request }) => {
-    console.log(tokens);
-    const idInfo = jwtDecode(tokens.idToken());
-    console.log(idInfo);
-    //findOrCreate(idInfo.sub, "test");
-    return {accessToken: tokens.accessToken()}
+    const idInfo = jwtDecode(tokens.idToken()) as JwtPayload & {email?: string};
+    if (!idInfo.sub || !idInfo.email) {
+      throw new Error("User info not provided");
+    }
+    const user = await findOrCreate(idInfo.sub, idInfo.email);
+    return {...user, accessToken: tokens.accessToken()}
   }
 );
 
