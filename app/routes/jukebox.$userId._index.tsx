@@ -2,8 +2,9 @@ import { Song } from "@prisma/client";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
-import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
+import { secretSession } from "~/services/AuthService.server";
 import { getNowPlaying } from "~/services/QueueService";
 
 
@@ -11,7 +12,14 @@ import { getNowPlaying } from "~/services/QueueService";
 // @ts-ignore
 const YouTubeElement: typeof YouTube = YouTube.default ?? YouTube;
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  let session = await secretSession.getSession(request.headers.get("cookie"));
+  let loggedInUser = session.get("user");
+
+  if (!loggedInUser) {
+    return redirect("/login");
+  }
+
   const idNum = parseInt(params.userId || "0");
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
