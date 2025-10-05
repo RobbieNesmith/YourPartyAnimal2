@@ -1,0 +1,38 @@
+import { jwtDecode } from "jwt-decode";
+import { Authenticator } from "remix-auth";
+import { Auth0Strategy } from "remix-auth-auth0";
+import { LoginUser } from "~/models/LoginUser";
+import { findOrCreate } from "./UserService.server";
+
+const {
+  AUTH0_CLIENT_ID,
+  AUTH0_CLIENT_SECRET,
+  AUTH0_DOMAIN,
+  BASE_URL,
+} = process.env;
+
+if (!AUTH0_CLIENT_ID) throw new Error("Missing AUTH0_CLIENT_ID!");
+if (!AUTH0_CLIENT_SECRET) throw new Error("Missing AUTH0_CLIENT_SECRET!");
+if (!AUTH0_DOMAIN) throw new Error("Missing AUTH0_DOMAIN!");
+if (!BASE_URL) throw new Error("Missing BASE_URL!");
+
+export const authenticator = new Authenticator<LoginUser>();
+
+export let auth0Strategy = new Auth0Strategy(
+  {
+    redirectURI: `${BASE_URL}/auth/callback`,
+    clientId: AUTH0_CLIENT_ID,
+    clientSecret: AUTH0_CLIENT_SECRET,
+    domain: AUTH0_DOMAIN,
+    scopes: ["openid", "email"]
+  },
+  async ({ tokens, request }) => {
+    console.log(tokens);
+    const idInfo = jwtDecode(tokens.idToken());
+    console.log(idInfo);
+    //findOrCreate(idInfo.sub, "test");
+    return {accessToken: tokens.accessToken()}
+  }
+);
+
+authenticator.use(auth0Strategy);
