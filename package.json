@@ -21,6 +21,7 @@
     "@remix-run/serve": "^2.16.8",
     "guid-typescript": "^1.0.9",
     "isbot": "^4.1.0",
+    "jwt-decode": "^4.0.0",
     "prisma": "^5.22.0",
     "react": "18.3.0-canary-01ab35a9a-20240228",
     "react-dom": "18.3.0-canary-01ab35a9a-20240228",
