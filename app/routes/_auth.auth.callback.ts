@@ -14,8 +14,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     session.set("user", user);
 
-    // Redirect to the home page after successful login
-    return redirect("/", {
+    // Redirect to the party's settings page after successful login
+    return redirect(`/party/${user.id}/settings`, {
       headers: {
         "Set-Cookie": await secretSession.commitSession(session),
       },
