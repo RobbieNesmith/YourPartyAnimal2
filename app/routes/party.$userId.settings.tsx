@@ -2,12 +2,21 @@ import { Button, Checkbox, FormControlLabel, Stack, TextField } from "@mui/mater
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
 import { bool, boolean, number, object } from "yup";
 import { prisma } from "~/prisma.server";
+import { secretSession } from "~/services/AuthService.server";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
+
+  let session = await secretSession.getSession(request.headers.get("cookie"));
+  let loggedInUser = session.get("user");
+
+  if (!loggedInUser) {
+    return redirect("/login");
+  }
+
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });

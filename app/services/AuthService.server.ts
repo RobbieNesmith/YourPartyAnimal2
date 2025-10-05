@@ -3,18 +3,32 @@ import { Authenticator } from "remix-auth";
 import { Auth0Strategy } from "remix-auth-auth0";
 import { LoginUser } from "~/models/LoginUser";
 import { findOrCreate } from "./UserService.server";
+import { createCookieSessionStorage } from "@remix-run/node";
 
 const {
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
   AUTH0_DOMAIN,
   BASE_URL,
+  SESSION_SECRET,
 } = process.env;
 
 if (!AUTH0_CLIENT_ID) throw new Error("Missing AUTH0_CLIENT_ID!");
 if (!AUTH0_CLIENT_SECRET) throw new Error("Missing AUTH0_CLIENT_SECRET!");
 if (!AUTH0_DOMAIN) throw new Error("Missing AUTH0_DOMAIN!");
 if (!BASE_URL) throw new Error("Missing BASE_URL!");
+if (!SESSION_SECRET) throw new Error("Missing SESSION_SECRET!");
+
+export const secretSession = createCookieSessionStorage({
+  cookie: {
+    name: "__session",
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secrets: [SESSION_SECRET],
+    secure: process.env.NODE_ENV === "production",
+  },
+});
 
 export const authenticator = new Authenticator<LoginUser>();
 
