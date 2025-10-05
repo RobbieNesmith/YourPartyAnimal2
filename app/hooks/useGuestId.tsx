@@ -2,26 +2,26 @@ import { Guid } from "guid-typescript";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { getItemOrNull } from "~/services/LocalStorageService";
 
-export const UserIdContext = createContext(null as string | null);
+export const GuestIdContext = createContext(null as string | null);
 
 export default function useGuestId() {
-  const userIdContext = useContext(UserIdContext);
-  if (!userIdContext) throw new Error("UserIdProvider not found!");
-  return userIdContext;
+  const guestIdContext = useContext(GuestIdContext);
+  if (typeof window !== "undefined" && window && !guestIdContext) throw new Error("GuestIdProvider not found!");
+  return guestIdContext;
 }
 
 export function GuestIdProvider({children}: {children: ReactNode}) {
   const [guestId, setGuestId] = useState<string | null>(getItemOrNull("partyanimal-guestid"));
   useEffect(() => {
     if (!guestId) {
-      const newUserId = Guid.create();
-      setGuestId(newUserId.toString());
-      localStorage.setItem("partyanimal-guestid", JSON.stringify(newUserId.toString()));
+      const newGuestId = Guid.create();
+      setGuestId(newGuestId.toString());
+      localStorage.setItem("partyanimal-guestid", JSON.stringify(newGuestId.toString()));
     }
   }, [guestId]);
   return (
-    <UserIdContext.Provider value={guestId}>
+    <GuestIdContext.Provider value={guestId}>
       { children }
-    </UserIdContext.Provider>
+    </GuestIdContext.Provider>
   )
 }
