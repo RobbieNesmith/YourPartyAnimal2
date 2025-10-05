@@ -23,6 +23,7 @@ model User {
   removal_value Int @default(-10)
   rate_limit Int @default(1)
   stop_requests Boolean @default(false)
+  provider_key String @unique
   @@map("users")
 }
 
