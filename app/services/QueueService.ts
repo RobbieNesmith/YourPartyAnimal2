@@ -32,6 +32,16 @@ export async function hasGuestRequestedRecently(userId: number, guestId: string)
   return latestGuestSong !== null;
 }
 
+export async function isSongAlreadyQueued(userId: number, videoId: string) {
+  const song = await prisma.song.findFirst({ where: {
+    user_id: userId,
+    video_id: videoId,
+    preset: false,
+  }});
+
+  return song != null;
+}
+
 export async function getNowPlaying(userId: number) {
   const nowPlaying = await prisma.song.findFirst({where: {
     user_id: userId,

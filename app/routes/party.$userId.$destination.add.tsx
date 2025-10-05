@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/nod
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SearchOutput, YoutubeSearchApi } from "youtube-search-api-ts";
-import { enqueueSong, hasGuestRequestedRecently, hasPartyStoppedRequests } from "~/services/QueueService";
+import { enqueueSong, hasGuestRequestedRecently, hasPartyStoppedRequests, isSongAlreadyQueued } from "~/services/QueueService";
 import { searchYoutube } from "~/services/YoutubeService";
 import { prisma } from "~/prisma.server";
 import { Button, Stack, TextField } from "@mui/material";
@@ -61,7 +61,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (stoppedRequests) {
       throw typedjson({ title: "Requests Stopped", message: "This party is no longer accepting requests." }, {status: 403});
     }
+
+    const songAlreadyQueued = await isSongAlreadyQueued(userIdInt, id);
+    if (songAlreadyQueued) {
+      throw typedjson({ title: "Song Already Requested", message: "That song has already been requested." }, {status: 400});
+    }
   }
+
   const api = new YoutubeSearchApi();
   const videoDetails = await api.getVideoDetails(id);
 
