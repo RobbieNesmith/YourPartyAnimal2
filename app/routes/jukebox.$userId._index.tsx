@@ -22,6 +22,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     return redirect("/login");
   }
 
+  if (!loggedInUser.approved) {
+    return redirect("/registrationPending");
+  }
+
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });

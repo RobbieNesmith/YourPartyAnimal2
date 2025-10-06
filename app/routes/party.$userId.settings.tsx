@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
 import { bool, boolean, number, object } from "yup";
+import { LoginUser } from "~/models/LoginUser";
 import { prisma } from "~/prisma.server";
 import { secretSession } from "~/services/AuthService.server";
 
@@ -11,10 +12,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
 
   let session = await secretSession.getSession(request.headers.get("cookie"));
-  let loggedInUser = session.get("user");
+  let loggedInUser = session.get("user") as LoginUser;
 
   if (!loggedInUser || loggedInUser.id !== idNum) {
     return redirect("/login");
+  }
+
+  if (!loggedInUser.approved) {
+    return redirect("/registrationPending");
   }
 
   const user = await prisma.user.findUnique({ where: { id: idNum } });
