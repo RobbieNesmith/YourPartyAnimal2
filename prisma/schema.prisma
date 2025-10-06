@@ -24,6 +24,7 @@ model User {
   rate_limit Int @default(1)
   stop_requests Boolean @default(false)
   provider_key String @unique
+  approved Boolean @default(false)
   @@map("users")
 }
 
