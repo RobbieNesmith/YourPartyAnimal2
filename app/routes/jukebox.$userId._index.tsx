@@ -13,14 +13,15 @@ import { getNowPlaying } from "~/services/QueueService";
 const YouTubeElement: typeof YouTube = YouTube.default ?? YouTube;
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
+  const idNum = parseInt(params.userId || "0");
+
   let session = await secretSession.getSession(request.headers.get("cookie"));
   let loggedInUser = session.get("user");
 
-  if (!loggedInUser) {
+  if (!loggedInUser || loggedInUser != idNum) {
     return redirect("/login");
   }
 
-  const idNum = parseInt(params.userId || "0");
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });

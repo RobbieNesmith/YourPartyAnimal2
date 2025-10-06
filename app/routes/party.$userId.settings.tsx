@@ -13,7 +13,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let session = await secretSession.getSession(request.headers.get("cookie"));
   let loggedInUser = session.get("user");
 
-  if (!loggedInUser) {
+  if (!loggedInUser || loggedInUser.id !== idNum) {
     return redirect("/login");
   }
 
