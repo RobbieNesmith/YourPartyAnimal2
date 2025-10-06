@@ -41,11 +41,11 @@ export let auth0Strategy = new Auth0Strategy(
     scopes: ["openid", "email"]
   },
   async ({ tokens, request }) => {
-    const idInfo = jwtDecode(tokens.idToken()) as JwtPayload & {email?: string};
+    const idInfo = jwtDecode(tokens.idToken()) as JwtPayload & {email?: string, partyanimal_roles: string[]};
     if (!idInfo.sub || !idInfo.email) {
       throw new Error("User info not provided");
     }
-    const user = await findOrCreate(idInfo.sub, idInfo.email);
+    const user = await findOrCreate(idInfo.sub, idInfo.email, idInfo.partyanimal_roles);
     return {...user, accessToken: tokens.accessToken()}
   }
 );
