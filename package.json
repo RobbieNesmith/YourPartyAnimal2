@@ -37,6 +37,7 @@
     "@babel/core": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-typescript": "^7.27.1",
+    "@netlify/remix-adapter": "^2.6.1",
     "@remix-run/dev": "^2.16.8",
     "@types/jest": "^30.0.0",
     "@types/react": "^18.3.23",
