@@ -71,6 +71,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const api = new YoutubeSearchApi();
   const videoDetails = await api.getVideoDetails(id);
 
+  console.log("test_video_details");
+  console.log(videoDetails);
+
   await enqueueSong(userIdInt, videoDetails.id, videoDetails.title, guestId, destination == "preset");
 
   return redirect(`/party/${userId}`);
