@@ -31,7 +31,7 @@
     "remix-auth": "^4.2.0",
     "remix-auth-auth0": "^2.2.0",
     "remix-typedjson": "^0.4.1",
-    "youtube-search-api-ts": "^1.2.8",
+    "youtube-search-api-ts": "git+https://github.com/RobbieNesmith/youtube-search-api-ts.git#fix-video-details",
     "yup": "^1.6.1"
   },
   "devDependencies": {
