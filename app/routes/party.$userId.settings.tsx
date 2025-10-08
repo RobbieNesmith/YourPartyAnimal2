@@ -3,7 +3,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
-import { bool, boolean, number, object } from "yup";
+import { bool, boolean, number, object, string } from "yup";
 import { LoginUser } from "~/models/LoginUser";
 import { prisma } from "~/prisma.server";
 import { secretSession } from "~/services/AuthService.server";
@@ -31,6 +31,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 function validateSettings(formData: FormData) {
   const settingsSchema = object({
+    userName: string().required(),
     promotionEnabled: boolean().required(),
     promotionScore: number().required().moreThan(0).integer(),
     removalEnabled: bool().required(),
@@ -41,6 +42,7 @@ function validateSettings(formData: FormData) {
 
   const settingsObject = {} as {[key: string]: FormDataEntryValue | null};
 
+  settingsObject["userName"] = formData.get("userName");
   settingsObject["promotionEnabled"] = formData.get("promotionEnabled") ? "true" : "false";
   settingsObject["promotionScore"] = formData.get("promotionScore");
   settingsObject["removalEnabled"] = formData.get("removalEnabled") ? "true" : "false";
@@ -64,6 +66,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     const newUser = await prisma.user.update({
       where: {id: idNum},
       data: {
+        name: settings.userName,
         promotion_enabled: settings.promotionEnabled,
         promotion_value: settings.promotionScore,
         removal_enabled: settings.removalEnabled,
@@ -80,6 +83,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 }
 
 interface SettingsInputs {
+  userName: string;
   promotionEnabled: boolean;
   promotionScore: number;
   removalEnabled: boolean;
@@ -112,6 +116,14 @@ export default function PartySettings() {
 
       <form method="POST" onSubmit={validate}>
         <Stack direction="column">
+          <TextField
+            {...register("userName", {required: true, minLength: 1})}
+            defaultValue={user.name}
+            type="string"
+            label="User Name"
+            error={!!errors.userName}
+            helperText={errors.userName && "User name is required"}
+          />
           <FormControlLabel
             control={
               <Checkbox
