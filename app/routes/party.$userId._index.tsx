@@ -3,10 +3,15 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import GuestSongQueue from "~/components/GuestSongQueue";
 import NowPlaying from "~/components/NowPlaying";
+import { LoginUser } from "~/models/LoginUser";
 import { prisma } from "~/prisma.server";
+import { secretSession } from "~/services/AuthService.server";
 import { getNowPlaying, getQueuedSongs } from "~/services/QueueService";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  let session = await secretSession.getSession(request.headers.get("cookie"));
+  let loggedInUser = session.get("user") as LoginUser | null;
+
   const idNum = parseInt(params.userId || "0");
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
@@ -14,11 +19,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
   const nowPlaying = await getNowPlaying(user.id);
   const queuedSongs = await getQueuedSongs(user.id);
-  return typedjson({ user, nowPlaying, queuedSongs });
+  return typedjson({ user, nowPlaying, queuedSongs, loggedIn: !!loggedInUser });
 }
 
 export default function PartyView() {
-  const { user, nowPlaying, queuedSongs } = useTypedLoaderData<typeof loader>();
+  const { user, nowPlaying, queuedSongs, loggedIn } = useTypedLoaderData<typeof loader>();
 
   return (
     <Stack sx={{height: "100%"}}>
@@ -33,6 +38,10 @@ export default function PartyView() {
         <h2>Queued Songs</h2>
         <GuestSongQueue queuedSongs={queuedSongs} />
       </div>
+      {
+        loggedIn &&
+        <Button className="section action" href={`/party/${user.id}/settings`}>Party Settings</Button>
+      }
     </Stack>
   );
 }
