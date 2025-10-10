@@ -187,7 +187,10 @@ export default function PartySettings() {
             <Link to={`/jukebox/${user.id}`} >Your Jukebox</Link>
           </li>
           <li>
-            <Link to={`/party/${user.id}/presets`} >Manage Preset Songs</Link>
+            <Link to={`/party/${user.id}/manage/preset`} >Manage Preset Songs</Link>
+          </li>
+          <li>
+            <Link to={`/party/${user.id}/manage/queue`} >Manage Requested Songs</Link>
           </li>
         </ul>
       </Stack>

@@ -1,5 +1,5 @@
 import { ActionFunctionArgs } from "@remix-run/node";
-import { typedjson } from "remix-typedjson";
+import { redirect } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
 
 export function loader() {
@@ -26,5 +26,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 
   const deletedSong = await prisma.song.delete({ where: { id: songIdNum }});
 
-  return typedjson({ success: deletedSong != null });
+  const destination = deletedSong.preset ? "preset" : "queue";
+
+  return redirect(`/party/${user.id}/manage/${destination}`);
 }
