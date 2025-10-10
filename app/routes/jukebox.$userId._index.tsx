@@ -3,6 +3,7 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
+import { LoginUser } from "~/models/LoginUser";
 import { prisma } from "~/prisma.server";
 import { secretSession } from "~/services/AuthService.server";
 import { getNowPlaying } from "~/services/QueueService";
@@ -16,9 +17,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
 
   let session = await secretSession.getSession(request.headers.get("cookie"));
-  let loggedInUser = session.get("user");
+  let loggedInUser = session.get("user") as LoginUser;
 
-  if (!loggedInUser || loggedInUser != idNum) {
+  if (!loggedInUser || loggedInUser.id != idNum) {
     return redirect("/login");
   }
 
