@@ -72,8 +72,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  await enqueueSong(userIdInt, id, title, guestId, destination == "preset");
+  await enqueueSong(userIdInt, id, title, guestId, destination === "preset");
 
+  if (destination === "preset") {
+    return redirect(`/party/${userId}/presets`);
+  }
   return redirect(`/party/${userId}`);
 }
 
