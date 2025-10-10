@@ -117,66 +117,68 @@ export default function PartySettings() {
 
       <Stack direction="column">
         <form method="POST" onSubmit={validate}>
-          <TextField
-            {...register("userName", {required: true, minLength: 1})}
-            defaultValue={user.name}
-            type="string"
-            label="User Name"
-            error={!!errors.userName}
-            helperText={errors.userName && "User name is required"}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="promotionEnabled"
-                defaultChecked={user.promotion_enabled}
-              />
-            }
-            label="Enable song promotion by voting"
-          />
-          <TextField
-            {...register("promotionScore", {required: true, min: 1})}
-            defaultValue={user.promotion_value}
-            type="number"
-            label="Promotion Score"
-            error={!!errors.promotionScore}
-            helperText={errors.promotionScore && "Promotion score must be greater than 0."} />
-          <p>When song promotion is active, this is the score increment required for a song to be promoted one place ahead in the queue. The negative of this value will cause a song to be demoted one place back.</p>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="removalEnabled"
-                defaultChecked={user.removal_enabled}
-              />
-            }
-            label="Enable song removal by voting"
-          />
-          <TextField
-            {...register("removalScore", {required: true, max: -1})}
-            defaultValue={user.removal_value}
-            type="number"
-            label="Removal Score"
-            error={!!errors.removalScore}
-            helperText={errors.removalScore && "Removal score must be less than 0."} />
-          <p>When song removal is active and a song reaches a score of this value or below, it is removed from the queue.</p>
-          <TextField
-            {...register("rateLimit", { required: true, min: 0 })}
-            defaultValue={user.rate_limit}
-            type="number"
-            label="Rate Limit (minutes)"
-            error={!!errors.rateLimit}
-            helperText={errors.rateLimit && "Rate limit must be at least 0."} />
-            <p>When rate limit is not zero, this is how many minutes guests must wait to add successive songs.</p>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="stopRequests"
-                defaultChecked={user.stop_requests}
-              />
-            }
-            label="Prevent songs from being requested"
-          />
-          <Button disabled={submitting} type="submit">Save Settings</Button>
+          <Stack direction="column">
+            <TextField
+              {...register("userName", {required: true, minLength: 1})}
+              defaultValue={user.name}
+              type="string"
+              label="User Name"
+              error={!!errors.userName}
+              helperText={errors.userName && "User name is required"}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="promotionEnabled"
+                  defaultChecked={user.promotion_enabled}
+                />
+              }
+              label="Enable song promotion by voting"
+            />
+            <TextField
+              {...register("promotionScore", {required: true, min: 1})}
+              defaultValue={user.promotion_value}
+              type="number"
+              label="Promotion Score"
+              error={!!errors.promotionScore}
+              helperText={errors.promotionScore && "Promotion score must be greater than 0."} />
+            <p>When song promotion is active, this is the score increment required for a song to be promoted one place ahead in the queue. The negative of this value will cause a song to be demoted one place back.</p>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="removalEnabled"
+                  defaultChecked={user.removal_enabled}
+                />
+              }
+              label="Enable song removal by voting"
+            />
+            <TextField
+              {...register("removalScore", {required: true, max: -1})}
+              defaultValue={user.removal_value}
+              type="number"
+              label="Removal Score"
+              error={!!errors.removalScore}
+              helperText={errors.removalScore && "Removal score must be less than 0."} />
+            <p>When song removal is active and a song reaches a score of this value or below, it is removed from the queue.</p>
+            <TextField
+              {...register("rateLimit", { required: true, min: 0 })}
+              defaultValue={user.rate_limit}
+              type="number"
+              label="Rate Limit (minutes)"
+              error={!!errors.rateLimit}
+              helperText={errors.rateLimit && "Rate limit must be at least 0."} />
+              <p>When rate limit is not zero, this is how many minutes guests must wait to add successive songs.</p>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="stopRequests"
+                  defaultChecked={user.stop_requests}
+                />
+              }
+              label="Prevent songs from being requested"
+            />
+            <Button disabled={submitting} type="submit">Save Settings</Button>
+          </Stack>
         </form>
         <h2>Your Party Links</h2>
         <ul>
