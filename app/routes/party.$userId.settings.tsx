@@ -1,5 +1,6 @@
 import { Button, Checkbox, FormControlLabel, Stack, TextField } from "@mui/material";
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -114,8 +115,8 @@ export default function PartySettings() {
     <>
       <h1>Settings for {user.name}&apos;s party</h1>
 
-      <form method="POST" onSubmit={validate}>
-        <Stack direction="column">
+      <Stack direction="column">
+        <form method="POST" onSubmit={validate}>
           <TextField
             {...register("userName", {required: true, minLength: 1})}
             defaultValue={user.name}
@@ -176,8 +177,20 @@ export default function PartySettings() {
             label="Prevent songs from being requested"
           />
           <Button disabled={submitting} type="submit">Save Settings</Button>
-        </Stack>
-      </form>
+        </form>
+        <h2>Your Party Links</h2>
+        <ul>
+          <li>
+            <Link to={`/party/${user.id}`} >Your Party</Link>
+          </li>
+          <li>
+            <Link to={`/jukebox/${user.id}`} >Your Jukebox</Link>
+          </li>
+          <li>
+            <Link to={`/party/${user.id}/presets`} >Manage Preset Songs</Link>
+          </li>
+        </ul>
+      </Stack>
     </>
   );
 }
