@@ -41,9 +41,10 @@ export default function PresetManagementPage() {
       </header>
       <Button className="section action" href={`/party/${user.id}/${destination}/add`}>Add a song</Button>
       <div className="section" style={{ display: "flex", flexDirection: "column", flexGrow: 1, overflow: "hidden" }}>
-        <h2>Queued Songs</h2>
+        <h2>{destination === "preset" ? "Preset" : "Queued"} Songs</h2>
         <DjSongQueue queuedSongs={songsToManage} />
       </div>
+      <Button className="section action" href={`/party/${user.id}/settings`}>Back to Party Settings</Button>
     </Stack>
   );
 }
