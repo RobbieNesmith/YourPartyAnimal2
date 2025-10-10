@@ -35,7 +35,7 @@ body {
   background: linear-gradient(0, #feba71, #ffc98f);
 }
 
-.main h1 {
+.section.main h1, .section.main h2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   background-color: #ffdfbc;
