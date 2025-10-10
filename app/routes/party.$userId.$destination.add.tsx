@@ -46,6 +46,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!id) {
     throw typedjson({ title: "Song not provided", message: "You have to say what song you want to add." }, { status: 400 });
   }
+  const title = form.get("title") as string | null;
+  if (!title) {
+    throw typedjson({ title: "Song title not provided", message: "You may be using an outdated version. Try refreshing your browser." }, { status: 400 })
+  }
   const guestId = form.get("guestId") as string | null;
   if (destination === "queue") {
     if (!guestId) {
@@ -68,10 +72,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  const api = new YoutubeSearchApi();
-  const videoDetails = await api.getVideoDetails(id);
-
-  await enqueueSong(userIdInt, videoDetails.id, videoDetails.title, guestId, destination == "preset");
+  await enqueueSong(userIdInt, id, title, guestId, destination == "preset");
 
   return redirect(`/party/${userId}`);
 }
