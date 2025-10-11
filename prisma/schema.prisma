@@ -25,6 +25,7 @@ model User {
   stop_requests Boolean @default(false)
   provider_key String @unique
   approved Boolean @default(false)
+  now_playing_id Int?
   @@map("users")
 }
 
