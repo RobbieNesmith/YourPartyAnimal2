@@ -4,6 +4,7 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { useParams } from "@remix-run/react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import DjSongQueue from "~/components/DjSongQueue";
+import { ListClearer } from "~/components/ListClearer";
 import { prisma } from "~/prisma.server";
 import { getPresetSongs, getQueuedSongs } from "~/services/QueueService";
 
@@ -32,7 +33,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function PresetManagementPage() {
   const { user, songsToManage } = useTypedLoaderData<typeof loader>();
-  const { destination } = useParams();
+  const { destination } = useParams() as { destination: "preset" | "queue"};
 
   return (
     <Stack sx={{ height: "100%" }}>
@@ -44,6 +45,7 @@ export default function PresetManagementPage() {
         <h2>{destination === "preset" ? "Preset" : "Queued"} Songs</h2>
         <DjSongQueue queuedSongs={songsToManage} />
       </div>
+      <ListClearer userId={user.id} destination={destination}/>
       <Button className="section action" href={`/party/${user.id}/settings`}>Back to Party Settings</Button>
     </Stack>
   );

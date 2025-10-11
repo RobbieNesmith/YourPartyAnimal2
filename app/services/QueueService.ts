@@ -202,3 +202,18 @@ export async function markSongAsPlayed(userId: number, songId: number) {
 
   return updatedSong;
 }
+
+export async function clearSongs(userId: number, preset: boolean, clearPlayed: boolean) {
+  const clearWhere: Prisma.SongWhereInput = {
+    user_id: userId,
+    preset: preset
+  };
+
+  if (!clearPlayed) {
+    clearWhere.played_at = null;
+  }
+
+  await prisma.song.deleteMany({
+    where: clearWhere
+  });
+}
