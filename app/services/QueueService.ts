@@ -153,6 +153,29 @@ export async function downvoteSong(userId: number, songId: number) {
   return updatedSong;
 }
 
+export async function markSongAsPlaying(userId: number, songId: number) {
+  const user = await prisma.user.findFirst({
+    where: { id: userId }
+  });
+
+  if (!user) {
+    return;
+  }
+
+  if (user?.now_playing_id) {
+    await prisma.song.update({
+      where: {
+        user_id: userId, id: user.now_playing_id },
+        data: { played_at: new Date() }
+    });
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { now_playing_id: songId }
+  });
+}
+
 export async function markSongAsPlayed(userId: number, songId: number) {
   const updatedSong = prisma.song.update({
     where: { user_id: userId, id: songId },
