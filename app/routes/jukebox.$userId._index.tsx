@@ -42,7 +42,7 @@ export default function DjPartyView() {
   const getNextSong = useCallback(async () => {
     const queuedSongsResponse = await fetch(`/jukebox/${user.id}/getQueuedSongs`);
     const queuedSongs = await queuedSongsResponse.json() as Song[];
-    const nextSong = queuedSongs[1];
+    const nextSong = queuedSongs[0];
     await fetch(`/jukebox/${user.id}/markNowPlaying/${nextSong.id}`,
       {method: "POST"}
     );

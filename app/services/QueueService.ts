@@ -43,29 +43,22 @@ export async function isSongAlreadyQueued(userId: number, videoId: string) {
 }
 
 export async function getNowPlaying(userId: number) {
-  const nowPlaying = await prisma.song.findFirst({where: {
-    user_id: userId,
-    played_at: null,
-    preset: false,
-  },
-  orderBy: {requested_at: "asc"}});
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+  });
 
-  if (nowPlaying == null) {
-    return await prisma.song.findFirst({where: {
-      user_id: userId,
-      preset: true,
-    },
-      orderBy: [{
-        played_at: {
-          sort: "asc",
-          nulls: "first"
-        },
-      },
-      {
-        requested_at: "asc",
-      }]
-    });
+  if (!user?.now_playing_id) {
+    return null;
   }
+
+  const nowPlaying = await prisma.song.findFirst({
+    where: {
+      user_id: userId,
+      id: user.now_playing_id
+    }
+  });
 
   return nowPlaying;
 }
@@ -100,6 +93,10 @@ export async function getQueuedSongs(userId: number, includePresets: boolean = f
     whereClause.rating = { gt: user.removal_value }
   }
 
+  if (user.now_playing_id) {
+    whereClause.id = { not: { equals: user.now_playing_id } };
+  }
+
   const nowPlaying = await prisma.song.findMany({
     where: whereClause,
     orderBy: { requested_at: "asc" }
@@ -123,11 +120,17 @@ export async function getPresetSongs(userId: number) {
     return [];
   }
 
+  const presetWhereClause: Prisma.SongWhereInput = {
+    user_id: userId,
+    preset: true,
+  };
+
+  if (user.now_playing_id) {
+    presetWhereClause.id = { not: { equals: user.now_playing_id } };
+  }
+
   return await prisma.song.findMany({
-    where: {
-      user_id: userId,
-      preset: true,
-    },
+    where: presetWhereClause,
     orderBy: [
       { played_at: {sort: "asc", nulls: "first"} },
       { requested_at: "asc" }
