@@ -2,11 +2,39 @@ import { Prisma, Song } from "@prisma/client";
 import {prisma} from "~/prisma.server"
 
 export async function enqueueSong(userId: number, id: string, name: string, guestId: string | null, preset: boolean = false) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    }
+  });
+
+  if (!user) {
+    return;
+  }
+
+  let requestedAt = new Date();
+  if (preset === false) {
+    const latestGuestSong = await prisma.song.findFirst({
+      where: {
+        user_id: userId,
+        preset: false,
+        requested_by: guestId
+      },
+      orderBy: { requested_at: "desc" }
+    });
+    if (latestGuestSong) {
+      const nextAllowedDate = new Date(latestGuestSong.requested_at.getTime() + user.rate_limit * 60000);
+      if (nextAllowedDate > requestedAt) {
+        requestedAt = nextAllowedDate;
+      }
+    }
+  }
+
   await prisma.song.create({data: {
     user_id: userId,
     video_id: id,
     name: name,
-    requested_at: new Date(),
+    requested_at: requestedAt,
     rating: 0,
     preset: preset,
     requested_by: guestId,
@@ -17,19 +45,6 @@ export async function hasPartyStoppedRequests(userId: number) {
   const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
 
   return user.stop_requests;
-}
-
-export async function hasGuestRequestedRecently(userId: number, guestId: string) {
-  const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
-
-  const latestGuestSong = await prisma.song.findFirst({where: {
-    user_id: userId,
-    requested_at: { gt: new Date(new Date().getTime() - user.rate_limit * 60000)},
-    preset: false,
-    requested_by: guestId
-  }});
-
-  return latestGuestSong !== null;
 }
 
 export async function isSongAlreadyQueued(userId: number, videoId: string) {

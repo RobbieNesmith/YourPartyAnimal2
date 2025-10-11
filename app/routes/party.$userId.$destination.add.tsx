@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/nod
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SearchOutput, YoutubeSearchApi } from "youtube-search-api-ts";
-import { enqueueSong, hasGuestRequestedRecently, hasPartyStoppedRequests, isSongAlreadyQueued } from "~/services/QueueService";
+import { enqueueSong, hasPartyStoppedRequests, isSongAlreadyQueued } from "~/services/QueueService";
 import { searchYoutube } from "~/services/YoutubeService";
 import { prisma } from "~/prisma.server";
 import { Button, Stack, TextField } from "@mui/material";
@@ -54,11 +54,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (destination === "queue") {
     if (!guestId) {
       throw typedjson({ title: "Guest Not Found", message: "Who are you?" }, { status: 404 });
-    }
-
-    const requestedRecently = await hasGuestRequestedRecently(userIdInt, guestId);
-    if (requestedRecently) {
-      throw typedjson({ title: "Last Request Too Recent", message: "You requested your last song too recently. Give someone else a chance.",}, {status: 429});
     }
 
     const stoppedRequests = await hasPartyStoppedRequests(userIdInt);
