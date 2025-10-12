@@ -3,25 +3,15 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { redirect, typedjson, useTypedLoaderData } from "remix-typedjson";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { bool, boolean, number, object, string } from "yup";
-import { LoginUser } from "~/models/LoginUser";
 import { prisma } from "~/prisma.server";
-import { secretSession } from "~/services/AuthService.server";
+import { checkLoggedIn } from "~/services/AuthService.server";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
 
-  let session = await secretSession.getSession(request.headers.get("cookie"));
-  let loggedInUser = session.get("user") as LoginUser;
-
-  if (!loggedInUser || loggedInUser.id !== idNum) {
-    return redirect("/login");
-  }
-
-  if (!loggedInUser.approved) {
-    return redirect("/registrationPending");
-  }
+  await checkLoggedIn(request, idNum);
 
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {

@@ -3,7 +3,7 @@ import { Authenticator } from "remix-auth";
 import { Auth0Strategy } from "remix-auth-auth0";
 import { LoginUser } from "~/models/LoginUser";
 import { findOrCreate } from "./UserService.server";
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 const {
   AUTH0_CLIENT_ID,
@@ -51,3 +51,16 @@ export let auth0Strategy = new Auth0Strategy(
 );
 
 authenticator.use(auth0Strategy);
+
+export async function checkLoggedIn(request: Request, userId: number) {
+  let session = await secretSession.getSession(request.headers.get("cookie"));
+  let loggedInUser = session.get("user") as LoginUser;
+
+  if (!loggedInUser || loggedInUser.id !== userId) {
+    throw redirect("/login");
+  }
+
+  if (!loggedInUser.approved) {
+    throw redirect("/registrationPending");
+  }
+}

@@ -1,6 +1,7 @@
 import { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "remix-typedjson";
 import { prisma } from "~/prisma.server";
+import { checkLoggedIn } from "~/services/AuthService.server";
 
 export function loader() {
   return new Response("Method Not Allowed!", { status: 405 });
@@ -8,6 +9,9 @@ export function loader() {
 
 export async function action({request, params}: ActionFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
+
+  await checkLoggedIn(request, idNum);
+
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("Not Found", { status: 404 });

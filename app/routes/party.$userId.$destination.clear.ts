@@ -1,5 +1,6 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "remix-typedjson";
+import { checkLoggedIn } from "~/services/AuthService.server";
 import { clearSongs } from "~/services/QueueService";
 
 export function loader() {
@@ -8,14 +9,18 @@ export function loader() {
 
 export async function action({ request, params }: LoaderFunctionArgs) {
   const { userId, destination } = params;
+
+  const idNum = parseInt(userId || "-1");
+
+  await checkLoggedIn(request, idNum);
+
   const formData = await request.formData();
   const clearPlayed = formData.get("clearPlayed") === "true";
-  const userIdInt = parseInt(userId || "-1");
   if (!(destination === "preset" || destination === "queue")) {
     return;
   }
 
-  clearSongs(userIdInt, destination === "preset", clearPlayed);
+  clearSongs(idNum, destination === "preset", clearPlayed);
 
   return redirect(`/party/${userId}/manage/${destination}`);
 }

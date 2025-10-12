@@ -6,10 +6,14 @@ import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import DjSongQueue from "~/components/DjSongQueue";
 import { ListClearer } from "~/components/ListClearer";
 import { prisma } from "~/prisma.server";
+import { checkLoggedIn } from "~/services/AuthService.server";
 import { getPresetSongs, getQueuedSongs } from "~/services/QueueService";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const idNum = parseInt(params.userId || "0");
+
+  await checkLoggedIn(request, idNum);
+
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw new Response("User not found.", { status: 404 });

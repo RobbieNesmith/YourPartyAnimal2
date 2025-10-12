@@ -1,15 +1,16 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { SearchOutput, YoutubeSearchApi } from "youtube-search-api-ts";
+import { SearchOutput } from "youtube-search-api-ts";
 import { enqueueSong, hasPartyStoppedRequests, isSongAlreadyQueued } from "~/services/QueueService";
 import { searchYoutube } from "~/services/YoutubeService";
 import { prisma } from "~/prisma.server";
 import { Button, Stack, TextField } from "@mui/material";
 import SearchResultsList from "~/components/SearchResultsList";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import { checkLoggedIn } from "~/services/AuthService.server";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const destination = params.destination;
 
   if (destination != "queue" && destination != "preset") {
@@ -17,6 +18,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 
   const idNum = parseInt(params.userId || "0");
+
+  if (destination === "preset") {
+    await checkLoggedIn(request, idNum);
+  }
+
   const user = await prisma.user.findUnique({ where: { id: idNum } });
   if (user == null) {
     throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist."}, {status: 404});
@@ -36,6 +42,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist." }, { status: 404 });
   }
   const userIdInt = parseInt(userId);
+
+  if (destination === "preset") {
+    await checkLoggedIn(request, userIdInt);
+  }
 
   if (!userIdInt) {
     throw typedjson({ title: "Party Not Found", message: "You're trying to go to a party that doesn't exist." }, { status: 404 });
