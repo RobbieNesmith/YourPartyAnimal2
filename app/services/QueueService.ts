@@ -181,11 +181,17 @@ export async function markSongAsPlaying(userId: number, songId: number) {
   }
 
   if (user?.now_playing_id) {
-    await prisma.song.update({
-      where: {
-        user_id: userId, id: user.now_playing_id },
-        data: { played_at: new Date() }
-    });
+    const songToMarkPlayed = await prisma.song.findFirst({
+      where: {user_id: userId, id: user.now_playing_id
+    }});
+
+    if (songToMarkPlayed) {
+      await prisma.song.update({
+        where: {
+          user_id: userId, id: user.now_playing_id },
+          data: { played_at: new Date() }
+      });
+    }
   }
 
   await prisma.user.update({
