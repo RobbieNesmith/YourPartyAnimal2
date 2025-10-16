@@ -115,7 +115,13 @@ export default function AddToQueueView() {
         </Stack>
       </form>
       <Stack direction="column" className="section" style={{flexGrow: 1, overflow: "hidden"}}>
-        <SearchResultsList partyId={user.id} results={results} destination={destination} />
+        <SearchResultsList
+          partyId={user.id}
+          results={results}
+          destination={destination}
+          enforceMaxLength={user.enforce_max_song_length}
+          maxLength={user.max_song_length}
+        />
       </Stack>
       <Button className="section action" href={`/party/${user.id}`}>Back</Button>
     </Stack>

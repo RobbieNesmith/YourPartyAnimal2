@@ -5,9 +5,11 @@ interface SearchResultsListProps {
   partyId: number;
   results: SearchOutput | null;
   destination: "queue" | "preset";
+  enforceMaxLength: boolean;
+  maxLength: number;
 }
 
-export default function SearchResultsList({partyId, results, destination}: SearchResultsListProps) {
+export default function SearchResultsList({partyId, results, destination, enforceMaxLength, maxLength}: SearchResultsListProps) {
 
   if (!results) {
     return null;
@@ -20,7 +22,17 @@ export default function SearchResultsList({partyId, results, destination}: Searc
   return (
     <div className="inset" style={{ overflow: "auto"}}>
       <ul className="queueList">
-        {results.items.map(item => <SearchResultsEntry partyId={partyId} item={item} key={item.id} destination={destination} />)}
+        {results.items.map(item => {
+          return (
+            <SearchResultsEntry
+              partyId={partyId}
+              item={item}
+              key={item.id}
+              destination={destination}
+              enforceMaxLength={enforceMaxLength}
+              maxLength={maxLength}
+            />)
+        })}
       </ul>
     </div>
   );
