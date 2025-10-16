@@ -28,6 +28,8 @@ function validateSettings(formData: FormData) {
     removalEnabled: bool().required(),
     removalScore: number().required().lessThan(0).integer(),
     rateLimit: number().required().moreThan(-1).integer(),
+    enforceMaxSongLength: bool().required(),
+    maxSongLength: number().required().moreThan(-1).integer(),
     stopRequests: bool().required(),
   });
 
@@ -39,6 +41,8 @@ function validateSettings(formData: FormData) {
   settingsObject["removalEnabled"] = formData.get("removalEnabled") ? "true" : "false";
   settingsObject["removalScore"] = formData.get("removalScore");
   settingsObject["rateLimit"] = formData.get("rateLimit");
+  settingsObject["enforceMaxSongLength"] = formData.get("enforceMaxSongLength") ? "true" : "false";
+  settingsObject["maxSongLength"] = formData.get("maxSongLength");
   settingsObject["stopRequests"] = formData.get("stopRequests") ? "true" : "false";
 
   return settingsSchema.cast(settingsObject);
@@ -63,6 +67,8 @@ export async function action({ params, request }: ActionFunctionArgs) {
         removal_enabled: settings.removalEnabled,
         removal_value: settings.removalScore,
         rate_limit: settings.rateLimit,
+        enforce_max_song_length: settings.enforceMaxSongLength,
+        max_song_length: settings.maxSongLength,
         stop_requests: settings.stopRequests,
       }
     });
@@ -80,6 +86,7 @@ interface SettingsInputs {
   removalEnabled: boolean;
   removalScore: number;
   rateLimit: number;
+  maxSongLength: number;
   stopRequests: boolean;
 }
 
@@ -159,7 +166,24 @@ export default function PartySettings() {
                 label="Rate Limit (minutes)"
                 error={!!errors.rateLimit}
                 helperText={errors.rateLimit && "Rate limit must be at least 0."} />
-                <p>When rate limit is not zero, this is how many minutes guests must wait to add successive songs.</p>
+              <p>When rate limit is not zero, this is how many minutes guests must wait to add successive songs.</p>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="enforceMaxSongLength"
+                    defaultChecked={user.enforce_max_song_length}
+                  />
+                }
+                label="Enable song length limit"
+              />
+              <TextField
+                {...register("maxSongLength", { required: true, min: 0 })}
+                defaultValue={user.max_song_length}
+                type="number"
+                label="Max Song Length (minutes)"
+                error={!!errors.maxSongLength}
+                helperText={errors.maxSongLength && "Max song length must be at least 0."} />
+              <p>Limit the length of requested songs.</p>
               <FormControlLabel
                 control={
                   <Checkbox
